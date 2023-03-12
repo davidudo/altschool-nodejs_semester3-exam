@@ -20,10 +20,11 @@
   "author": "David Udo",
   "license": "ISC",
   "dependencies": {
+    "concurrently": "^7.6.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "mysql2": "^3.2.0",
+    "pg": "^8.10.0",
     "sequelize": "^6.29.3"
   },
   "devDependencies": {
@@ -32,7 +33,6 @@
     "@types/sequelize": "^4.28.14",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "@typescript-eslint/parser": "^5.54.1",
-    "concurrently": "^7.6.0",
     "eslint": "^8.36.0",
     "eslint-config-standard-with-typescript": "^34.0.0",
     "eslint-plugin-import": "^2.27.5",
