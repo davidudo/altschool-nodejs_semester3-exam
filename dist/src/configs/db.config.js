@@ -25,7 +25,7 @@ const connection = new sequelize_1.Sequelize(PGDATABASE, PGUSER, PGPASSWORD, {
     dialect: 'postgres',
     dialectOptions: {
         ssl: {
-            "require": true
+            require: true
         }
     }
 });

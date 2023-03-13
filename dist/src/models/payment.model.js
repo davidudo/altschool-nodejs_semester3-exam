@@ -1,32 +1,41 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Payment = void 0;
+exports.PaymentModel = void 0;
 const sequelize_1 = require("sequelize");
 const db_config_1 = require("../configs/db.config");
-exports.Payment = db_config_1.connection.define("Payment", {
-    // Model attributes are defined here
+const order_model_1 = require("./order.model");
+class PaymentModel extends sequelize_1.Model {
+}
+exports.PaymentModel = PaymentModel;
+PaymentModel.init({
     id: {
         type: sequelize_1.DataTypes.BIGINT,
         autoIncrement: true,
-        primaryKey: true,
+        primaryKey: true
     },
     order_id: {
         type: sequelize_1.DataTypes.BIGINT,
-        // foreignKey: true,
+        references: {
+            model: order_model_1.OrderModel,
+            key: 'id'
+        }
     },
     amount: {
         type: sequelize_1.DataTypes.DECIMAL,
-        allowNull: false,
+        allowNull: false
     },
     payment_gateway: {
         type: sequelize_1.DataTypes.DECIMAL,
-        allowNull: false,
+        allowNull: false
     },
     date: {
         type: sequelize_1.DataTypes.DATE,
-        allowNull: false,
-    },
+        allowNull: false
+    }
 }, {
-    tableName: "payment",
-    // Other model options go here
+    tableName: 'payment',
+    sequelize: db_config_1.connection,
+    timestamps: true,
+    underscored: true
 });
+PaymentModel.hasOne(order_model_1.OrderModel, { foreignKey: 'order_id', as: 'order' });

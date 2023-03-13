@@ -2,13 +2,14 @@ module.exports = {
   env: {
     browser: true,
     commonjs: true,
-    es2021: true
+    es2016: true
   },
   extends: 'standard-with-typescript',
   overrides: [
   ],
   parserOptions: {
-    ecmaVersion: 'latest'
+    ecmaVersion: '2016',
+    project: './tsconfig.json'
   },
   rules: {
   }

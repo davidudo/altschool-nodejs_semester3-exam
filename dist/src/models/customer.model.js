@@ -1,28 +1,38 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Customer = void 0;
+exports.CustomerModel = void 0;
 const sequelize_1 = require("sequelize");
 const db_config_1 = require("../configs/db.config");
-exports.Customer = db_config_1.connection.define("Customer", {
+class CustomerModel extends sequelize_1.Model {
+}
+exports.CustomerModel = CustomerModel;
+CustomerModel.init({
     // Model attributes are defined here
     id: {
         type: sequelize_1.DataTypes.BIGINT,
         autoIncrement: true,
-        primaryKey: true,
+        primaryKey: true
+    },
+    imageUrl: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true
     },
     name: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
+        allowNull: true
     },
     phone_number: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
+        allowNull: true
     },
     address: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
-    },
+        allowNull: true
+    }
 }, {
-    tableName: "customer",
+    tableName: 'customer',
+    sequelize: db_config_1.connection,
+    timestamps: true,
+    underscored: true
     // Other model options go here
 });
