@@ -18,11 +18,12 @@ const order_route_1 = __importDefault(require("./src/routes/order.route"));
 const payment_route_1 = __importDefault(require("./src/routes/payment.route"));
 const order_socket_1 = __importDefault(require("./src/sockets/order.socket"));
 const db_config_1 = require("./src/configs/db.config");
-(0, db_config_1.dbConnection)();
+void (0, db_config_1.dbConnection)();
 dotenv_1.default.config();
 const PORT = parseInt((_a = process.env.PORT) !== null && _a !== void 0 ? _a : '8000');
 const HOST = (_b = process.env.HOST) !== null && _b !== void 0 ? _b : 'localhost';
 process.env.PWD = process.cwd();
+const PWD = process.env.PWD;
 const app = (0, express_1.default)();
 const corsOptions = { origin: '*' };
 app.use((0, cors_1.default)(corsOptions));
@@ -33,7 +34,7 @@ app.use(express_1.default.json());
 app.use((0, morgan_1.default)('tiny'));
 // Routes
 app.get('/', (req, res) => {
-    res.sendFile(`${process.env.PWD}/src/public/index.html`);
+    res.sendFile(`${PWD}/src/public/index.html`);
 });
 // app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/customer', customer_route_1.default);
@@ -43,20 +44,28 @@ app.use('/api/v1/payment', payment_route_1.default);
 // Handle errors
 app.use((err, req, res, next) => {
     console.error(err);
-    res.status(err.status || 500);
-    res.json({ error: err.message });
+    const errorStatus = err.status;
+    res.status(errorStatus !== null && errorStatus !== void 0 ? errorStatus : 500).json({
+        error: err.message
+    });
     next();
 });
 const server = http_1.default.createServer(app);
-const io = new socket_io_1.Server(server);
+const io = new socket_io_1.Server(server, {
+    cors: {
+        origin: '*',
+        methods: '*'
+    }
+});
 // Sockets
 io.on('connection', (socket) => {
-    console.log(`New connection: ${socket.id}`);
-    socket.emit("connected", "connected to backend server");
+    const socketId = socket.id;
+    console.log(`New connection: ${socketId}`);
+    socket.emit('connected', 'connected to backend server');
     (0, order_socket_1.default)(socket);
     // Handle disconnect
     socket.on('disconnect', () => {
-        console.log(`Disconnected: ${socket.id}`);
+        console.log(`Disconnected: ${socketId}`);
     });
 });
 server.listen(PORT, HOST, () => {

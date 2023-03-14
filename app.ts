@@ -1,5 +1,5 @@
 import express, { type Express, type Request, type Response, type NextFunction } from 'express'
-import { Server, Socket } from 'socket.io'
+import { Server, type Socket } from 'socket.io'
 import morgan from 'morgan'
 import cors from 'cors'
 import helmet from 'helmet'
@@ -14,13 +14,14 @@ import paymentRouter from './src/routes/payment.route'
 import orderSocket from './src/sockets/order.socket'
 import { dbConnection } from './src/configs/db.config'
 
-dbConnection()
+void dbConnection()
 
 dotenv.config()
 
 const PORT: number = parseInt(process.env.PORT ?? '8000')
 const HOST: string = process.env.HOST ?? 'localhost'
 process.env.PWD = process.cwd()
+const PWD = process.env.PWD
 
 const app: Express = express()
 
@@ -36,7 +37,7 @@ app.use(morgan('tiny'))
 
 // Routes
 app.get('/', (req: Request, res: Response) => {
-  res.sendFile(`${process.env.PWD}/src/public/index.html`)
+  res.sendFile(`${PWD}/src/public/index.html`)
 })
 
 // app.use('/api/v1/auth', authRouter)
@@ -47,29 +48,40 @@ app.use('/api/v1/payment', paymentRouter)
 
 // Handle errors
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error(err);
-  res.status(err.status || 500)
-  res.json({ error: err.message })
-  next();
+  console.error(err)
+
+  const errorStatus: number = err.status
+
+  res.status(errorStatus ?? 500).json({
+    error: err.message
+  })
+  next()
 })
 
-const server = http.createServer(app);
-const io: Server = new Server(server);
+const server = http.createServer(app)
+const io: Server = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: '*'
+  }
+})
 
 // Sockets
 io.on('connection', (socket: Socket): void => {
-  console.log(`New connection: ${socket.id}`)
-  
-  socket.emit("connected", "connected to backend server");
-  
+  const socketId: string = socket.id
+
+  console.log(`New connection: ${socketId}`)
+
+  socket.emit('connected', 'connected to backend server')
+
   orderSocket(socket)
-  
+
   // Handle disconnect
   socket.on('disconnect', (): void => {
-    console.log(`Disconnected: ${socket.id}`)
+    console.log(`Disconnected: ${socketId}`)
   })
 })
 
 server.listen(PORT, HOST, () => {
   console.log(`Server is running at http://${HOST}:${PORT}`)
-});
+})
