@@ -5,8 +5,8 @@ import { MenuItemModel } from './menu_item.model'
 
 interface OrderItemAttributes {
   id: number
-  order_id: number
-  menu_item_id: number
+  orderId: number
+  menuItemId: number
   quantity: number
   notes: string | null
 }
@@ -15,8 +15,8 @@ interface OrderItemCreationAttributes extends Optional<OrderItemAttributes, 'id'
 
 class OrderItemModel extends Model<OrderItemAttributes, OrderItemCreationAttributes> implements OrderItemAttributes {
   public id!: number
-  public order_id!: number
-  public menu_item_id!: number
+  public orderId!: number
+  public menuItemId!: number
   public quantity!: number
   public notes!: string | null
 
@@ -32,14 +32,14 @@ OrderItemModel.init(
       autoIncrement: true,
       primaryKey: true
     },
-    order_id: {
+    orderId: {
       type: DataTypes.BIGINT,
       references: {
         model: OrderModel,
         key: 'id'
       }
     },
-    menu_item_id: {
+    menuItemId: {
       type: DataTypes.BIGINT,
       references: {
         model: MenuItemModel,
@@ -58,12 +58,11 @@ OrderItemModel.init(
   {
     tableName: 'order_item',
     sequelize: connection,
-    timestamps: true,
-    underscored: true
+    timestamps: true
   }
 )
 
-OrderItemModel.belongsTo(OrderModel, { foreignKey: 'order_id', as: 'order' })
-OrderItemModel.hasOne(MenuItemModel, { foreignKey: 'menu_item_id', as: 'menu_item' })
+OrderItemModel.belongsTo(OrderModel, { foreignKey: 'orderId', as: 'order' })
+OrderItemModel.hasOne(MenuItemModel, { foreignKey: 'menuItemId', as: 'menuItem' })
 
 export { OrderItemModel, type OrderItemAttributes }

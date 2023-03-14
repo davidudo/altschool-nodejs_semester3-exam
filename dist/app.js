@@ -11,7 +11,6 @@ const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
 const http_1 = __importDefault(require("http"));
 const dotenv_1 = __importDefault(require("dotenv"));
-// import authRouter from './src/routes/auth.route'
 const customer_route_1 = __importDefault(require("./src/routes/customer.route"));
 const staff_route_1 = __importDefault(require("./src/routes/staff.route"));
 const order_route_1 = __importDefault(require("./src/routes/order.route"));
@@ -36,7 +35,6 @@ app.use((0, morgan_1.default)('tiny'));
 app.get('/', (req, res) => {
     res.sendFile(`${PWD}/src/public/index.html`);
 });
-// app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/customer', customer_route_1.default);
 app.use('/api/v1/staff', staff_route_1.default);
 app.use('/api/v1/order', order_route_1.default);

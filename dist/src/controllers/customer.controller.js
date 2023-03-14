@@ -9,12 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const customer_model_1 = require("../models/customer.model");
 function getAllCustomers(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log('getAllCustomers');
+            const customers = yield customer_model_1.CustomerModel.findAll();
             return res.status(200).json({
-                status: true
+                status: true,
+                customers
             });
         }
         catch (error) {
@@ -25,9 +27,14 @@ function getAllCustomers(req, res, next) {
 function getCustomerById(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log('getCustomerById');
+            const customerId = Number(req.params.id);
+            const customer = yield customer_model_1.CustomerModel.findByPk(customerId);
+            if (customer == null) {
+                return res.status(404).json({ message: 'Customer not found' });
+            }
             return res.status(200).json({
-                status: true
+                status: true,
+                customer
             });
         }
         catch (error) {
@@ -38,9 +45,18 @@ function getCustomerById(req, res, next) {
 function addCustomer(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log('addCustomer');
+            const { imageUrl, name, email, phoneNumber, address } = req.body;
+            // Create a new customer using the Customer model
+            const customer = yield customer_model_1.CustomerModel.create({
+                imageUrl,
+                name,
+                email,
+                phoneNumber,
+                address
+            });
             return res.status(200).json({
-                status: true
+                status: true,
+                customer
             });
         }
         catch (error) {
@@ -51,9 +67,21 @@ function addCustomer(req, res, next) {
 function updateCustomer(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log('updateCustomer');
+            const customerId = Number(req.params.id);
+            const { imageUrl, name, email, phoneNumber, address } = req.body;
+            const customer = yield customer_model_1.CustomerModel.findOne({ where: { id: customerId } });
+            if (customer == null) {
+                return res.status(404).send(`Customer with id ${customerId} not found`);
+            }
+            customer.imageUrl = imageUrl !== null && imageUrl !== void 0 ? imageUrl : customer.imageUrl;
+            customer.name = name !== null && name !== void 0 ? name : customer.name;
+            customer.email = email !== null && email !== void 0 ? email : customer.email;
+            customer.phoneNumber = phoneNumber !== null && phoneNumber !== void 0 ? phoneNumber : customer.phoneNumber;
+            customer.address = address !== null && address !== void 0 ? address : customer.address;
+            yield customer.save();
             return res.status(200).json({
-                status: true
+                status: true,
+                customer
             });
         }
         catch (error) {
@@ -64,9 +92,16 @@ function updateCustomer(req, res, next) {
 function deleteCustomer(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log('deleteCustomer');
+            const customerId = req.params.id;
+            const customer = yield customer_model_1.CustomerModel.findOne({ where: { id: customerId } });
+            if (customer == null) {
+                res.status(404).json({ error: 'Customer not found' });
+                return;
+            }
+            yield customer_model_1.CustomerModel.destroy({ where: { id: customerId } });
             return res.status(200).json({
-                status: true
+                status: true,
+                message: 'Customer successfully deleted'
             });
         }
         catch (error) {

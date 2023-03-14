@@ -5,7 +5,8 @@ interface CustomerAttributes {
   id: number
   imageUrl: string | null
   name: string | null
-  phone_number: string | null
+  email: string | null
+  phoneNumber: string | null
   address: string | null
 }
 
@@ -15,7 +16,8 @@ class CustomerModel extends Model<CustomerAttributes, CustomerCreationAttributes
   public id!: number
   public imageUrl!: string | null
   public name!: string | null
-  public phone_number!: string | null
+  public email!: string | null
+  public phoneNumber!: string | null
   public address!: string | null
 }
 
@@ -35,7 +37,11 @@ CustomerModel.init(
       type: DataTypes.STRING,
       allowNull: true
     },
-    phone_number: {
+    email: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    phoneNumber: {
       type: DataTypes.STRING,
       allowNull: true
     },
@@ -47,8 +53,7 @@ CustomerModel.init(
   {
     tableName: 'customer',
     sequelize: connection,
-    timestamps: true,
-    underscored: true
+    timestamps: true
     // Other model options go here
   }
 )

@@ -5,6 +5,7 @@ interface StaffAttributes {
   id: number
   imageUrl: string | null
   name: string
+  email: string
   role: string
   rating: '1' | '2' | '3' | '4' | '5'
 }
@@ -15,6 +16,7 @@ class StaffModel extends Model<StaffAttributes, StaffCreationAttributes> impleme
   public id!: number
   public imageUrl!: string | null
   public name!: string
+  public email!: string
   public role!: string
   public rating!: '1' | '2' | '3' | '4' | '5'
 
@@ -34,6 +36,10 @@ StaffModel.init(
       allowNull: true
     },
     name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    email: {
       type: DataTypes.STRING,
       allowNull: false
     },

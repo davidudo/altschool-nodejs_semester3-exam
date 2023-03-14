@@ -15,14 +15,14 @@ OrderItemModel.init({
         autoIncrement: true,
         primaryKey: true
     },
-    order_id: {
+    orderId: {
         type: sequelize_1.DataTypes.BIGINT,
         references: {
             model: order_model_1.OrderModel,
             key: 'id'
         }
     },
-    menu_item_id: {
+    menuItemId: {
         type: sequelize_1.DataTypes.BIGINT,
         references: {
             model: menu_item_model_1.MenuItemModel,
@@ -40,8 +40,7 @@ OrderItemModel.init({
 }, {
     tableName: 'order_item',
     sequelize: db_config_1.connection,
-    timestamps: true,
-    underscored: true
+    timestamps: true
 });
-OrderItemModel.belongsTo(order_model_1.OrderModel, { foreignKey: 'order_id', as: 'order' });
-OrderItemModel.hasOne(menu_item_model_1.MenuItemModel, { foreignKey: 'menu_item_id', as: 'menu_item' });
+OrderItemModel.belongsTo(order_model_1.OrderModel, { foreignKey: 'orderId', as: 'order' });
+OrderItemModel.hasOne(menu_item_model_1.MenuItemModel, { foreignKey: 'menuItemId', as: 'menuItem' });

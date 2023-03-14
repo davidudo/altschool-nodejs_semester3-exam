@@ -47,8 +47,7 @@ MenuItemModel.init(
   {
     tableName: 'menu_item',
     sequelize: connection,
-    timestamps: true,
-    underscored: true
+    timestamps: true
   }
 )
 

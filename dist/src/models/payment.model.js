@@ -13,7 +13,7 @@ PaymentModel.init({
         autoIncrement: true,
         primaryKey: true
     },
-    order_id: {
+    orderId: {
         type: sequelize_1.DataTypes.BIGINT,
         references: {
             model: order_model_1.OrderModel,
@@ -24,7 +24,7 @@ PaymentModel.init({
         type: sequelize_1.DataTypes.DECIMAL,
         allowNull: false
     },
-    payment_gateway: {
+    paymentGateway: {
         type: sequelize_1.DataTypes.DECIMAL,
         allowNull: false
     },
@@ -35,7 +35,6 @@ PaymentModel.init({
 }, {
     tableName: 'payment',
     sequelize: db_config_1.connection,
-    timestamps: true,
-    underscored: true
+    timestamps: true
 });
-PaymentModel.hasOne(order_model_1.OrderModel, { foreignKey: 'order_id', as: 'order' });
+PaymentModel.hasOne(order_model_1.OrderModel, { foreignKey: 'orderId', as: 'order' });

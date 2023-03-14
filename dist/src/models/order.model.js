@@ -16,21 +16,21 @@ OrderModel.init({
         autoIncrement: true,
         primaryKey: true
     },
-    customer_id: {
+    customerId: {
         type: sequelize_1.DataTypes.BIGINT,
         references: {
             model: customer_model_1.CustomerModel,
             key: 'id'
         }
     },
-    customer_fb_id: {
+    customerFBId: {
         type: sequelize_1.DataTypes.BIGINT,
         references: {
             model: customer_feedback_model_1.CustomerFeedbackModel,
             key: 'id'
         }
     },
-    staff_id: {
+    staffId: {
         type: sequelize_1.DataTypes.BIGINT,
         references: {
             model: staff_model_1.StaffModel,
@@ -52,9 +52,8 @@ OrderModel.init({
 }, {
     sequelize: db_config_1.connection,
     tableName: 'order',
-    timestamps: true,
-    underscored: true
+    timestamps: true
 });
 OrderModel.belongsTo(customer_model_1.CustomerModel, { foreignKey: 'customer_id', as: 'customer' });
-OrderModel.hasOne(customer_feedback_model_1.CustomerFeedbackModel, { foreignKey: 'customer_fb_id', as: 'customer_feedback' });
-OrderModel.hasOne(staff_model_1.StaffModel, { foreignKey: 'staff_id', as: 'staff' });
+OrderModel.hasOne(customer_feedback_model_1.CustomerFeedbackModel, { foreignKey: 'customerFBId', as: 'customer_feedback' });
+OrderModel.hasOne(staff_model_1.StaffModel, { foreignKey: 'staffId', as: 'staff' });

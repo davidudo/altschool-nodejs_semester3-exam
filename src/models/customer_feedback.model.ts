@@ -35,8 +35,7 @@ CustomerFeedbackModel.init(
   {
     tableName: 'customer_feedback',
     sequelize: connection,
-    timestamps: true,
-    underscored: true
+    timestamps: true
   }
 )
 

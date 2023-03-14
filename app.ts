@@ -6,7 +6,6 @@ import helmet from 'helmet'
 import http from 'http'
 import dotenv from 'dotenv'
 
-// import authRouter from './src/routes/auth.route'
 import customerRouter from './src/routes/customer.route'
 import staffRouter from './src/routes/staff.route'
 import orderRouter from './src/routes/order.route'
@@ -40,7 +39,6 @@ app.get('/', (req: Request, res: Response) => {
   res.sendFile(`${PWD}/src/public/index.html`)
 })
 
-// app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/customer', customerRouter)
 app.use('/api/v1/staff', staffRouter)
 app.use('/api/v1/order', orderRouter)

@@ -4,9 +4,9 @@ import { OrderModel } from './order.model'
 
 interface PaymentAttributes {
   id: number
-  order_id: number
+  orderId: number
   amount: number
-  payment_gateway: number
+  paymentGateway: number
   date: Date
 }
 
@@ -14,9 +14,9 @@ interface PaymentCreationAttributes extends Optional<PaymentAttributes, 'id'> {}
 
 class PaymentModel extends Model<PaymentAttributes, PaymentCreationAttributes> implements PaymentAttributes {
   public id!: number
-  public order_id!: number
+  public orderId!: number
   public amount!: number
-  public payment_gateway!: number
+  public paymentGateway!: number
   public date!: Date
 
   public readonly createdAt!: Date
@@ -30,7 +30,7 @@ PaymentModel.init(
       autoIncrement: true,
       primaryKey: true
     },
-    order_id: {
+    orderId: {
       type: DataTypes.BIGINT,
       references: {
         model: OrderModel,
@@ -41,7 +41,7 @@ PaymentModel.init(
       type: DataTypes.DECIMAL,
       allowNull: false
     },
-    payment_gateway: {
+    paymentGateway: {
       type: DataTypes.DECIMAL,
       allowNull: false
     },
@@ -53,11 +53,10 @@ PaymentModel.init(
   {
     tableName: 'payment',
     sequelize: connection,
-    timestamps: true,
-    underscored: true
+    timestamps: true
   }
 )
 
-PaymentModel.hasOne(OrderModel, { foreignKey: 'order_id', as: 'order' })
+PaymentModel.hasOne(OrderModel, { foreignKey: 'orderId', as: 'order' })
 
 export { PaymentModel, type PaymentAttributes }

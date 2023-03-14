@@ -32,6 +32,5 @@ MenuItemModel.init({
 }, {
     tableName: 'menu_item',
     sequelize: db_config_1.connection,
-    timestamps: true,
-    underscored: true
+    timestamps: true
 });

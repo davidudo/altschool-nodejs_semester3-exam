@@ -6,9 +6,9 @@ import { StaffModel } from './staff.model'
 
 interface OrderAttributes {
   id: number
-  customer_id: number
-  customer_fb_id: number
-  staff_id: number
+  customerId: number
+  customerFBId: number
+  staffId: number
   status: 'pending' | 'accepted' | 'delivered' | 'canceled'
   total_price: number
   date: Date
@@ -18,9 +18,9 @@ interface OrderCreationAttributes extends Optional<OrderAttributes, 'id'> {}
 
 class OrderModel extends Model<OrderAttributes, OrderCreationAttributes> implements OrderAttributes {
   public id!: number
-  public customer_id!: number
-  public customer_fb_id!: number
-  public staff_id!: number
+  public customerId!: number
+  public customerFBId!: number
+  public staffId!: number
   public status!: 'pending' | 'accepted' | 'delivered' | 'canceled'
   public total_price!: number
   public date!: Date
@@ -38,21 +38,21 @@ OrderModel.init(
       autoIncrement: true,
       primaryKey: true
     },
-    customer_id: {
+    customerId: {
       type: DataTypes.BIGINT,
       references: {
         model: CustomerModel,
         key: 'id'
       }
     },
-    customer_fb_id: {
+    customerFBId: {
       type: DataTypes.BIGINT,
       references: {
         model: CustomerFeedbackModel,
         key: 'id'
       }
     },
-    staff_id: {
+    staffId: {
       type: DataTypes.BIGINT,
       references: {
         model: StaffModel,
@@ -75,13 +75,12 @@ OrderModel.init(
   {
     sequelize: connection,
     tableName: 'order',
-    timestamps: true,
-    underscored: true
+    timestamps: true
   }
 )
 
 OrderModel.belongsTo(CustomerModel, { foreignKey: 'customer_id', as: 'customer' })
-OrderModel.hasOne(CustomerFeedbackModel, { foreignKey: 'customer_fb_id', as: 'customer_feedback' })
-OrderModel.hasOne(StaffModel, { foreignKey: 'staff_id', as: 'staff' })
+OrderModel.hasOne(CustomerFeedbackModel, { foreignKey: 'customerFBId', as: 'customer_feedback' })
+OrderModel.hasOne(StaffModel, { foreignKey: 'staffId', as: 'staff' })
 
 export { OrderModel, type OrderAttributes }

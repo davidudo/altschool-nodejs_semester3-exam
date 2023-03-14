@@ -21,7 +21,11 @@ CustomerModel.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: true
     },
-    phone_number: {
+    email: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true
+    },
+    phoneNumber: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true
     },
@@ -32,7 +36,6 @@ CustomerModel.init({
 }, {
     tableName: 'customer',
     sequelize: db_config_1.connection,
-    timestamps: true,
-    underscored: true
+    timestamps: true
     // Other model options go here
 });
