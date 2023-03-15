@@ -6,6 +6,7 @@ var _a, _b;
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const socket_io_1 = require("socket.io");
+const express_session_1 = __importDefault(require("express-session"));
 const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
@@ -48,6 +49,7 @@ app.use((err, req, res, next) => {
     });
     next();
 });
+// Socket
 const server = http_1.default.createServer(app);
 const io = new socket_io_1.Server(server, {
     cors: {
@@ -55,10 +57,27 @@ const io = new socket_io_1.Server(server, {
         methods: '*'
     }
 });
-// Sockets
+// Session middleware
+const sessionMiddleware = (0, express_session_1.default)({
+    secret: 'my-secret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+    store: new express_session_1.default.MemoryStore()
+});
+app.use(sessionMiddleware);
+// Attach Socket.io middleware to capture session from handshake
+io.use((socket, next) => {
+    sessionMiddleware(socket.request, {}, next);
+});
 io.on('connection', (socket) => {
     const socketId = socket.id;
     console.log(`New connection: ${socketId}`);
+    const session = socket.request.httpVersion;
+    console.log(session);
+    // Set session data
+    // session.username = 'example'
+    // session.save()
     socket.emit('connected', 'connected to backend server');
     (0, order_socket_1.default)(socket);
     // Handle disconnect

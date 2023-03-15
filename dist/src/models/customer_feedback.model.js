@@ -16,10 +16,6 @@ CustomerFeedbackModel.init({
     comment: {
         type: sequelize_1.DataTypes.TEXT,
         allowNull: false
-    },
-    date: {
-        type: sequelize_1.DataTypes.DATE,
-        allowNull: false
     }
 }, {
     tableName: 'customer_feedback',

@@ -7,7 +7,7 @@ interface PaymentAttributes {
   orderId: number
   amount: number
   paymentGateway: number
-  date: Date
+  deletedAt: Date | null
 }
 
 interface PaymentCreationAttributes extends Optional<PaymentAttributes, 'id'> {}
@@ -17,7 +17,7 @@ class PaymentModel extends Model<PaymentAttributes, PaymentCreationAttributes> i
   public orderId!: number
   public amount!: number
   public paymentGateway!: number
-  public date!: Date
+  public deletedAt!: Date | null
 
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
@@ -45,9 +45,9 @@ PaymentModel.init(
       type: DataTypes.DECIMAL,
       allowNull: false
     },
-    date: {
+    deletedAt: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: true
     }
   },
   {

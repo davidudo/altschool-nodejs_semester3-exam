@@ -1,5 +1,6 @@
 import express, { type Express, type Request, type Response, type NextFunction } from 'express'
 import { Server, type Socket } from 'socket.io'
+import session from 'express-session'
 import morgan from 'morgan'
 import cors from 'cors'
 import helmet from 'helmet'
@@ -56,6 +57,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   next()
 })
 
+// Socket
 const server = http.createServer(app)
 const io: Server = new Server(server, {
   cors: {
@@ -64,11 +66,32 @@ const io: Server = new Server(server, {
   }
 })
 
-// Sockets
+// Session middleware
+const sessionMiddleware = session({
+  secret: 'my-secret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false },
+  store: new session.MemoryStore()
+})
+
+app.use(sessionMiddleware)
+
+// Attach Socket.io middleware to capture session from handshake
+io.use((socket: Socket, next) => {
+  sessionMiddleware(socket.request as Request, {} as any, next as any)
+})
+
 io.on('connection', (socket: Socket): void => {
   const socketId: string = socket.id
-
   console.log(`New connection: ${socketId}`)
+
+  const session = socket.request.httpVersion
+  console.log(session)
+
+  // Set session data
+  // session.username = 'example'
+  // session.save()
 
   socket.emit('connected', 'connected to backend server')
 

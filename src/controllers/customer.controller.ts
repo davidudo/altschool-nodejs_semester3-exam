@@ -85,7 +85,7 @@ async function updateCustomer (req: Request, res: Response, next: NextFunction):
 
 async function deleteCustomer (req: Request, res: Response, next: NextFunction): Promise<any> {
   try {
-    const customerId = req.params.id
+    const customerId: number = Number(req.params.id)
     const customer = await CustomerModel.findOne({ where: { id: customerId } })
 
     if (customer == null) {

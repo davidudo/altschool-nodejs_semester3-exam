@@ -92,7 +92,7 @@ function updateCustomer(req, res, next) {
 function deleteCustomer(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const customerId = req.params.id;
+            const customerId = Number(req.params.id);
             const customer = yield customer_model_1.CustomerModel.findOne({ where: { id: customerId } });
             if (customer == null) {
                 res.status(404).json({ error: 'Customer not found' });

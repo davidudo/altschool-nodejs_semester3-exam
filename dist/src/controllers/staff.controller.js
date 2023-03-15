@@ -9,12 +9,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const staff_model_1 = require("../models/staff.model");
 function getAllStaffs(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log('getAllStaffs');
+            const staffs = yield staff_model_1.StaffModel.findAll({
+                where: { deletedAt: null }
+            });
             return res.status(200).json({
-                status: true
+                status: true,
+                staffs
             });
         }
         catch (error) {
@@ -25,9 +29,16 @@ function getAllStaffs(req, res, next) {
 function getStaffById(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log('getStaffById');
+            const staffId = Number(req.params.id);
+            const staff = yield staff_model_1.StaffModel.findOne({
+                where: { id: staffId, deletedAt: null }
+            });
+            if (staff == null) {
+                return res.status(404).json({ message: 'Staff not found' });
+            }
             return res.status(200).json({
-                status: true
+                status: true,
+                staff
             });
         }
         catch (error) {
@@ -38,9 +49,17 @@ function getStaffById(req, res, next) {
 function addStaff(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log('addStaff');
+            const { imageUrl, name, email, role, rating } = req.body;
+            const staff = yield staff_model_1.StaffModel.create({
+                imageUrl,
+                name,
+                email,
+                role,
+                rating
+            });
             return res.status(200).json({
-                status: true
+                status: true,
+                staff
             });
         }
         catch (error) {
@@ -51,9 +70,21 @@ function addStaff(req, res, next) {
 function updateStaff(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log('updateStaff');
+            const staffId = Number(req.params.id);
+            const { imageUrl, name, email, role, rating } = req.body;
+            const staff = yield staff_model_1.StaffModel.findOne({ where: { id: staffId, deletedAt: null } });
+            if (staff == null) {
+                return res.status(404).send(`Customer with id ${staffId} not found`);
+            }
+            staff.imageUrl = imageUrl !== null && imageUrl !== void 0 ? imageUrl : staff.imageUrl;
+            staff.name = name !== null && name !== void 0 ? name : staff.name;
+            staff.email = email !== null && email !== void 0 ? email : staff.email;
+            staff.role = role !== null && role !== void 0 ? role : staff.role;
+            staff.rating = rating !== null && rating !== void 0 ? rating : staff.rating;
+            yield staff.save();
             return res.status(200).json({
-                status: true
+                status: true,
+                staff
             });
         }
         catch (error) {
@@ -64,10 +95,21 @@ function updateStaff(req, res, next) {
 function deleteStaff(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log('deleteStaff');
-            return res.status(200).json({
-                status: true
+            const staffId = Number(req.params.id);
+            const staff = yield staff_model_1.StaffModel.findOne({
+                where: { id: staffId, deletedAt: null }
             });
+            if (staff == null) {
+                return res.status(404).json({ message: 'Staff not found' });
+            }
+            else {
+                staff.deletedAt = new Date();
+                yield staff.save();
+                return res.status(200).json({
+                    status: true,
+                    message: 'Staff deleted successfully'
+                });
+            }
         }
         catch (error) {
             next(error);

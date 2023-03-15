@@ -28,9 +28,9 @@ PaymentModel.init({
         type: sequelize_1.DataTypes.DECIMAL,
         allowNull: false
     },
-    date: {
+    deletedAt: {
         type: sequelize_1.DataTypes.DATE,
-        allowNull: false
+        allowNull: true
     }
 }, {
     tableName: 'payment',

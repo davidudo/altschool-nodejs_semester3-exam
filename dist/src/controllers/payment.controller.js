@@ -9,12 +9,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const payment_model_1 = require("../models/payment.model");
 function getAllPayments(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log('getAllPayments');
+            const payments = yield payment_model_1.PaymentModel.findAll({
+                where: { deletedAt: null }
+            });
             return res.status(200).json({
-                status: true
+                status: true,
+                payments
             });
         }
         catch (error) {
@@ -25,9 +29,16 @@ function getAllPayments(req, res, next) {
 function getPaymentById(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log('getPaymentById');
+            const paymentId = Number(req.params.id);
+            const payment = yield payment_model_1.PaymentModel.findOne({
+                where: { id: paymentId, deletedAt: null }
+            });
+            if (payment == null) {
+                return res.status(404).json({ message: 'Payment not found' });
+            }
             return res.status(200).json({
-                status: true
+                status: true,
+                payment
             });
         }
         catch (error) {
@@ -38,9 +49,15 @@ function getPaymentById(req, res, next) {
 function addPayment(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log('addPayment');
+            const { orderId, amount, paymentGateway } = req.body;
+            const payment = yield payment_model_1.PaymentModel.create({
+                orderId,
+                amount,
+                paymentGateway
+            });
             return res.status(200).json({
-                status: true
+                status: true,
+                payment
             });
         }
         catch (error) {
@@ -51,9 +68,19 @@ function addPayment(req, res, next) {
 function updatePayment(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log('updatePayment');
+            const paymentId = Number(req.params.id);
+            const { orderId, amount, paymentGateway } = req.body;
+            const payment = yield payment_model_1.PaymentModel.findOne({ where: { id: paymentId, deletedAt: null } });
+            if (payment == null) {
+                return res.status(404).send(`Customer with id ${paymentId} not found`);
+            }
+            payment.orderId = orderId !== null && orderId !== void 0 ? orderId : payment.orderId;
+            payment.amount = amount !== null && amount !== void 0 ? amount : payment.amount;
+            payment.paymentGateway = paymentGateway !== null && paymentGateway !== void 0 ? paymentGateway : payment.paymentGateway;
+            yield payment.save();
             return res.status(200).json({
-                status: true
+                status: true,
+                payment
             });
         }
         catch (error) {
@@ -64,10 +91,21 @@ function updatePayment(req, res, next) {
 function deletePayment(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log('deletePayment');
-            return res.status(200).json({
-                status: true
+            const paymentId = Number(req.params.id);
+            const payment = yield payment_model_1.PaymentModel.findOne({
+                where: { id: paymentId, deletedAt: null }
             });
+            if (payment == null) {
+                return res.status(404).json({ message: 'Payment not found' });
+            }
+            else {
+                payment.deletedAt = new Date();
+                yield payment.save();
+                return res.status(200).json({
+                    status: true,
+                    message: 'Payment deleted successfully'
+                });
+            }
         }
         catch (error) {
             next(error);

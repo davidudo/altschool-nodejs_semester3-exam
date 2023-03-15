@@ -31,6 +31,10 @@ StaffModel.init({
     rating: {
         type: sequelize_1.DataTypes.ENUM('1', '2', '3', '4', '5'),
         allowNull: false
+    },
+    deletedAt: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: true
     }
 }, {
     tableName: 'staff',

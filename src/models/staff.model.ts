@@ -8,6 +8,7 @@ interface StaffAttributes {
   email: string
   role: string
   rating: '1' | '2' | '3' | '4' | '5'
+  deletedAt: Date | null
 }
 
 interface StaffCreationAttributes extends Optional<StaffAttributes, 'id'> {}
@@ -19,6 +20,7 @@ class StaffModel extends Model<StaffAttributes, StaffCreationAttributes> impleme
   public email!: string
   public role!: string
   public rating!: '1' | '2' | '3' | '4' | '5'
+  public deletedAt!: Date | null
 
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
@@ -50,6 +52,10 @@ StaffModel.init(
     rating: {
       type: DataTypes.ENUM('1', '2', '3', '4', '5'),
       allowNull: false
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true
     }
   },
   {

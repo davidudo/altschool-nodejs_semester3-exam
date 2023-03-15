@@ -7,11 +7,11 @@ import { StaffModel } from './staff.model'
 interface OrderAttributes {
   id: number
   customerId: number
-  customerFBId: number
+  customerFBId: number | null
   staffId: number
   status: 'pending' | 'accepted' | 'delivered' | 'canceled'
-  total_price: number
-  date: Date
+  totalPrice: number
+  deletedAt: Date | null
 }
 
 interface OrderCreationAttributes extends Optional<OrderAttributes, 'id'> {}
@@ -19,11 +19,11 @@ interface OrderCreationAttributes extends Optional<OrderAttributes, 'id'> {}
 class OrderModel extends Model<OrderAttributes, OrderCreationAttributes> implements OrderAttributes {
   public id!: number
   public customerId!: number
-  public customerFBId!: number
+  public customerFBId!: number | null
   public staffId!: number
   public status!: 'pending' | 'accepted' | 'delivered' | 'canceled'
-  public total_price!: number
-  public date!: Date
+  public totalPrice!: number
+  public deletedAt!: Date | null
 
   // timestamps!
   public readonly createdAt!: Date
@@ -47,6 +47,7 @@ OrderModel.init(
     },
     customerFBId: {
       type: DataTypes.BIGINT,
+      allowNull: true,
       references: {
         model: CustomerFeedbackModel,
         key: 'id'
@@ -63,13 +64,13 @@ OrderModel.init(
       type: DataTypes.ENUM('pending', 'accepted', 'delivered', 'canceled'),
       allowNull: false
     },
-    total_price: {
+    totalPrice: {
       type: DataTypes.DECIMAL,
       allowNull: false
     },
-    date: {
+    deletedAt: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: true
     }
   },
   {
@@ -80,7 +81,7 @@ OrderModel.init(
 )
 
 OrderModel.belongsTo(CustomerModel, { foreignKey: 'customer_id', as: 'customer' })
-OrderModel.hasOne(CustomerFeedbackModel, { foreignKey: 'customerFBId', as: 'customer_feedback' })
+OrderModel.hasOne(CustomerFeedbackModel, { foreignKey: 'customerFBId', as: 'customerFeedback' })
 OrderModel.hasOne(StaffModel, { foreignKey: 'staffId', as: 'staff' })
 
 export { OrderModel, type OrderAttributes }

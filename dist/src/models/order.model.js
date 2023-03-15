@@ -25,6 +25,7 @@ OrderModel.init({
     },
     customerFBId: {
         type: sequelize_1.DataTypes.BIGINT,
+        allowNull: true,
         references: {
             model: customer_feedback_model_1.CustomerFeedbackModel,
             key: 'id'
@@ -41,13 +42,13 @@ OrderModel.init({
         type: sequelize_1.DataTypes.ENUM('pending', 'accepted', 'delivered', 'canceled'),
         allowNull: false
     },
-    total_price: {
+    totalPrice: {
         type: sequelize_1.DataTypes.DECIMAL,
         allowNull: false
     },
-    date: {
+    deletedAt: {
         type: sequelize_1.DataTypes.DATE,
-        allowNull: false
+        allowNull: true
     }
 }, {
     sequelize: db_config_1.connection,
@@ -55,5 +56,5 @@ OrderModel.init({
     timestamps: true
 });
 OrderModel.belongsTo(customer_model_1.CustomerModel, { foreignKey: 'customer_id', as: 'customer' });
-OrderModel.hasOne(customer_feedback_model_1.CustomerFeedbackModel, { foreignKey: 'customerFBId', as: 'customer_feedback' });
+OrderModel.hasOne(customer_feedback_model_1.CustomerFeedbackModel, { foreignKey: 'customerFBId', as: 'customerFeedback' });
 OrderModel.hasOne(staff_model_1.StaffModel, { foreignKey: 'staffId', as: 'staff' });
