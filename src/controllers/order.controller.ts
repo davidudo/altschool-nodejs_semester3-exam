@@ -1,9 +1,8 @@
 import { type Request, type Response, type NextFunction } from 'express'
 import { OrderModel, type OrderAttributes } from '../models/order.model'
 import { OrderItemModel } from '../models/order_item.model'
-import { MenuItemModel } from '../models/menu_item.model'
-import { CustomerModel } from '../models/customer.model'
-import { CustomerFeedbackModel } from '../models/customer_feedback.model'
+import { CustomerModel, type CustomerAttributes } from '../models/customer.model'
+import { CustomerFeedbackModel, type CustomerFBAttributes } from '../models/customer_feedback.model'
 import { StaffModel } from '../models/staff.model'
 
 async function getAllOrders (req: Request, res: Response, next: NextFunction): Promise<any> {
@@ -43,90 +42,52 @@ async function getOrderById (req: Request, res: Response, next: NextFunction): P
 
 async function addOrder (req: Request, res: Response, next: NextFunction): Promise<any> {
   try {
-    // Data format to be received from client
-    let receivedData = {
-      customer: {
-        id,
-        name,
-        address,
-        phoneNumber
-      },
-      order: {
-        id,
-        orderItems: [
-          {
-            id,
-            menuItems: [
-              {
-                id,
-                imageUrl,
-                name,
-                description,
-                price
-              }
-            ],
-            quantity,
-            notes
-          }
-        ],
-        status,
-        totalPrice
-      },
-      customerFeedback: {
-        id,
-        comment
-      },
-      staff: {
-        id,
-        name
-      }
-    }
-    
-    // Check if customer exists and create customer if not found
-    const customerId: number = Number(receivedData.customer.id)
+    const {
+      customer,
+      order,
+      customerFeedback
+    } = req.body
 
-    const customer = await CustomerModel.findByPk(customerId)
-    
-    if (customer == null) {
+    // Check if customer exists and create customer if not found
+    const customerId: number = Number(customer.id)
+
+    const customerData: CustomerAttributes | null = await CustomerModel.findByPk(customerId)
+
+    if (customerData == null) {
       const {
-        imageUrl,
-        name,
-        email,
-        phoneNumber,
-        address
-      } = receivedData.customer
-      
+        name
+      } = customer
+
       await CustomerModel.create({
-        imageUrl,
-        name,
-        email,
-        phoneNumber,
-        address
+        name
       })
     }
-    
+
+    let customerFBId: number | null = null
+
     // Check if customer feedback is available
-    if (receivedData.customerFeedback == null) {
-      const comment = receivedData.customerFeedback.comment
-      
-      const feedback = {
-        comment
-      }
-      
-      const customerfb = await CustomerFeedbackModel.create(feedback)
+    if (customerFeedback != null) {
+      const comment = customerFeedback.comment
+
+      const customerfb: CustomerFBAttributes = await CustomerFeedbackModel.create(comment)
+
+      customerFBId = customerfb.id
     }
-    
-    // TODO: for loop =>  Assign staff to deliver order
+
+    // Assign staff to deliver order
     const staffs = await StaffModel.findAll({
-      where: { deletedAt: null }
+      where: { deletedAt: null, role: 'delivery' }
     })
-    
-    const customerid = receivedData.customer.id
-    const customerFBId = customerfb.id
-    const status = 'pending'
-    const staffId
-    const totalPrice = receivedData.order.totalPrice
-    
+
+    const randomIndex: number = Math.floor(Math.random() * staffs.length)
+
+    // Choose a random staff
+    const staff = staffs[randomIndex]
+
+    const status: 'pending' = 'pending'
+    const staffId: number = staff.id
+    const totalPrice = order.totalPrice
+
     // Create order
     const orderData = {
       customerId,
@@ -135,25 +96,31 @@ async function addOrder (req: Request, res: Response, next: NextFunction): Promi
       status,
       totalPrice
     }
-    
-    const order = await OrderModel.create(orderData)
-    
+
+    const orderResponse: OrderAttributes = await OrderModel.create(orderData)
+
     // TODO: for loop => Create order item
-    const orderId = order.id
-    const menuItemId = receivedData.order.orderItems.menuItems.id
-    
-    let orderItemData = {
-      orderId,
-      menuItemId,
-      quantity,
-      notes,
+    const orderItemsReceived = order.orderItems
+
+    for (const orderItemReceived of orderItemsReceived) {
+      const orderId: number = orderResponse.id
+      const menuItemId: number = orderItemReceived.menuItem.id
+      const quantity: number = orderItemReceived.quantity
+      const notes: string | null = orderItemReceived.notes
+
+      const orderItemData = {
+        orderId,
+        menuItemId,
+        quantity,
+        notes
+      }
+
+      await OrderItemModel.create(orderItemData)
     }
-    
-    await OrderItemModel.create(orderItemData)
-    
+
     return res.status(200).json({
       status: true,
-      order
+      orderData
     })
   } catch (error) {
     next(error)

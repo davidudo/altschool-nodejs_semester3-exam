@@ -1,5 +1,4 @@
 import { type Socket } from 'socket.io'
-import { OrderModel } from '../models/order.model'
 
 function adminSocket (socket: Socket): void {
   const socketId: string = socket.id
@@ -7,7 +6,7 @@ function adminSocket (socket: Socket): void {
   // Listen for messages
   socket.on('order-status', (data: string): void => {
     console.log(`Message received from ${socketId}: ${data}`)
-    
+
     socket.broadcast.emit('order-status', data)
   })
 }

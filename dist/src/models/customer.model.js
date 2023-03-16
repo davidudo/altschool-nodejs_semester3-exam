@@ -23,6 +23,7 @@ CustomerModel.init({
     },
     email: {
         type: sequelize_1.DataTypes.STRING,
+        unique: true,
         allowNull: true
     },
     phoneNumber: {
@@ -31,6 +32,10 @@ CustomerModel.init({
     },
     address: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: true
+    },
+    deletedAt: {
+        type: sequelize_1.DataTypes.DATE,
         allowNull: true
     }
 }, {

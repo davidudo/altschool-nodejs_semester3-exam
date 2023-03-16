@@ -74,7 +74,7 @@ function updateStaff(req, res, next) {
             const { imageUrl, name, email, role, rating } = req.body;
             const staff = yield staff_model_1.StaffModel.findOne({ where: { id: staffId, deletedAt: null } });
             if (staff == null) {
-                return res.status(404).send(`Customer with id ${staffId} not found`);
+                return res.status(404).send(`Staff with id ${staffId} not found`);
             }
             staff.imageUrl = imageUrl !== null && imageUrl !== void 0 ? imageUrl : staff.imageUrl;
             staff.name = name !== null && name !== void 0 ? name : staff.name;

@@ -4,6 +4,7 @@ import { connection } from '../configs/db.config'
 interface CustomerFBAttributes {
   id: number
   comment: string
+  deletedAt: Date | null
 }
 
 interface CustomerFBCreationAttributes extends Optional<CustomerFBAttributes, 'id'> {}
@@ -11,6 +12,7 @@ interface CustomerFBCreationAttributes extends Optional<CustomerFBAttributes, 'i
 class CustomerFeedbackModel extends Model<CustomerFBAttributes, CustomerFBCreationAttributes> implements CustomerFBAttributes {
   public id!: number
   public comment!: string
+  public deletedAt!: Date | null
 }
 
 CustomerFeedbackModel.init(
@@ -24,6 +26,10 @@ CustomerFeedbackModel.init(
     comment: {
       type: DataTypes.TEXT,
       allowNull: false
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true
     }
   },
   {

@@ -22,6 +22,7 @@ StaffModel.init({
     },
     email: {
         type: sequelize_1.DataTypes.STRING,
+        unique: true,
         allowNull: false
     },
     role: {
@@ -30,6 +31,7 @@ StaffModel.init({
     },
     rating: {
         type: sequelize_1.DataTypes.ENUM('1', '2', '3', '4', '5'),
+        defaultValue: '1',
         allowNull: false
     },
     deletedAt: {

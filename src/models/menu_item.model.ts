@@ -7,6 +7,7 @@ interface MenuItemAttributes {
   name: string
   description: string | null
   price: number
+  deletedAt: Date | null
 }
 
 interface MenuItemCreationAttributes extends Optional<MenuItemAttributes, 'id'> {}
@@ -17,6 +18,7 @@ class MenuItemModel extends Model<MenuItemAttributes, MenuItemCreationAttributes
   public name!: string
   public description!: string | null
   public price!: number
+  public deletedAt!: Date | null
 }
 
 MenuItemModel.init(
@@ -42,6 +44,10 @@ MenuItemModel.init(
     price: {
       type: DataTypes.DECIMAL,
       allowNull: false
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true
     }
   },
   {

@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const stripe_1 = __importDefault(require("stripe"));
-const stripe_config_ts_1 = require("./configs/stripe.config.ts");
+const stripe_config_1 = require("../configs/stripe.config");
 const payment_model_1 = require("../models/payment.model");
 function getAllPayments(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -55,12 +55,15 @@ function addPayment(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { orderId, amount, paymentGateway } = req.body;
-            const stripe = new stripe_1.default(stripe_config_ts_1.stripeConfig.apiKey);
+            const config = {
+                apiVersion: '2022-11-15'
+            };
+            const stripe = new stripe_1.default(stripe_config_1.stripeConfig.apiKey, config);
             const charge = yield stripe.charges.create({
                 amount,
                 currency: 'usd',
                 description: 'Example charge',
-                source: 'tok_visa', // replace with an actual token obtained from Stripe.js or Elements
+                source: 'tok_visa' // replace with an actual token obtained from Stripe.js or Elements
             });
             const payment = yield payment_model_1.PaymentModel.create({
                 orderId,

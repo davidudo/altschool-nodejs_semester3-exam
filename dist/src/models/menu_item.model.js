@@ -28,6 +28,10 @@ MenuItemModel.init({
     price: {
         type: sequelize_1.DataTypes.DECIMAL,
         allowNull: false
+    },
+    deletedAt: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: true
     }
 }, {
     tableName: 'menu_item',

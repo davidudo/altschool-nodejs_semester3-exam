@@ -18,7 +18,7 @@ async function getCustomerById (req: Request, res: Response, next: NextFunction)
   try {
     const customerId: number = Number(req.params.id)
 
-    const customer = await CustomerModel.findByPk({ where: { id: customerId, deletedAt: null } })
+    const customer = await CustomerModel.findOne({ where: { id: customerId, deletedAt: null } })
 
     if (customer == null) {
       return res.status(404).json({ message: 'Customer not found' })
@@ -86,7 +86,7 @@ async function updateCustomer (req: Request, res: Response, next: NextFunction):
 async function deleteCustomer (req: Request, res: Response, next: NextFunction): Promise<any> {
   try {
     const customerId = Number(req.params.id)
-    
+
     const customer = await CustomerModel.findOne({
       where: { id: customerId, deletedAt: null }
     })

@@ -62,6 +62,7 @@ OrderModel.init(
     },
     status: {
       type: DataTypes.ENUM('pending', 'accepted', 'delivered', 'canceled'),
+      defaultValue: 'pending',
       allowNull: false
     },
     totalPrice: {

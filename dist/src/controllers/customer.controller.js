@@ -28,7 +28,7 @@ function getCustomerById(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const customerId = Number(req.params.id);
-            const customer = yield customer_model_1.CustomerModel.findByPk({ where: { id: customerId, deletedAt: null } });
+            const customer = yield customer_model_1.CustomerModel.findOne({ where: { id: customerId, deletedAt: null } });
             if (customer == null) {
                 return res.status(404).json({ message: 'Customer not found' });
             }

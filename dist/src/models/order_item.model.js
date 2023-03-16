@@ -36,6 +36,10 @@ OrderItemModel.init({
     notes: {
         type: sequelize_1.DataTypes.TEXT,
         allowNull: true
+    },
+    deletedAt: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: true
     }
 }, {
     tableName: 'order_item',

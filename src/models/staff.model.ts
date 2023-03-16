@@ -43,6 +43,7 @@ StaffModel.init(
     },
     email: {
       type: DataTypes.STRING,
+      unique: true,
       allowNull: false
     },
     role: {
@@ -51,6 +52,7 @@ StaffModel.init(
     },
     rating: {
       type: DataTypes.ENUM('1', '2', '3', '4', '5'),
+      defaultValue: '1',
       allowNull: false
     },
     deletedAt: {

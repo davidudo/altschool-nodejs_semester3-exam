@@ -9,6 +9,7 @@ interface OrderItemAttributes {
   menuItemId: number
   quantity: number
   notes: string | null
+  deletedAt: Date | null
 }
 
 interface OrderItemCreationAttributes extends Optional<OrderItemAttributes, 'id'> {}
@@ -19,6 +20,7 @@ class OrderItemModel extends Model<OrderItemAttributes, OrderItemCreationAttribu
   public menuItemId!: number
   public quantity!: number
   public notes!: string | null
+  public deletedAt!: Date | null
 
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
@@ -52,6 +54,10 @@ OrderItemModel.init(
     },
     notes: {
       type: DataTypes.TEXT,
+      allowNull: true
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
       allowNull: true
     }
   },

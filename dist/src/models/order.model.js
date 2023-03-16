@@ -40,6 +40,7 @@ OrderModel.init({
     },
     status: {
         type: sequelize_1.DataTypes.ENUM('pending', 'accepted', 'delivered', 'canceled'),
+        defaultValue: 'pending',
         allowNull: false
     },
     totalPrice: {

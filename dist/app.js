@@ -15,7 +15,10 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const customer_route_1 = __importDefault(require("./src/routes/customer.route"));
 const staff_route_1 = __importDefault(require("./src/routes/staff.route"));
 const order_route_1 = __importDefault(require("./src/routes/order.route"));
+const menu_item_route_1 = __importDefault(require("./src/routes/menu_item.route"));
 const payment_route_1 = __importDefault(require("./src/routes/payment.route"));
+const order_socket_1 = __importDefault(require("./src/sockets/order.socket"));
+const admin_socket_1 = __importDefault(require("./src/sockets/admin.socket"));
 const db_config_1 = require("./src/configs/db.config");
 void (0, db_config_1.dbConnection)();
 dotenv_1.default.config();
@@ -39,6 +42,7 @@ app.get('/', (req, res) => {
 app.use('/api/v1/customer', customer_route_1.default);
 app.use('/api/v1/staff', staff_route_1.default);
 app.use('/api/v1/order', order_route_1.default);
+app.use('/api/v1/menu_item', menu_item_route_1.default);
 app.use('/api/v1/payment', payment_route_1.default);
 // Handle errors
 app.use((err, req, res, next) => {
@@ -79,8 +83,8 @@ io.on('connection', (socket) => {
     // Set session data
     // session.username = 'example'
     // session.save()
-    //orderSocket(socket)
-    //adminSocket(socket)
+    (0, order_socket_1.default)(socket);
+    (0, admin_socket_1.default)(socket);
     // Handle disconnect
     socket.on('disconnect', () => {
         console.log(`Disconnected: ${socketId}`);

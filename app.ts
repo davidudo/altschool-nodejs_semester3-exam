@@ -10,6 +10,7 @@ import dotenv from 'dotenv'
 import customerRouter from './src/routes/customer.route'
 import staffRouter from './src/routes/staff.route'
 import orderRouter from './src/routes/order.route'
+import menuItemRouter from './src/routes/menu_item.route'
 import paymentRouter from './src/routes/payment.route'
 import orderSocket from './src/sockets/order.socket'
 import adminSocket from './src/sockets/admin.socket'
@@ -46,6 +47,7 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/v1/customer', customerRouter)
 app.use('/api/v1/staff', staffRouter)
 app.use('/api/v1/order', orderRouter)
+app.use('/api/v1/menu_item', menuItemRouter)
 app.use('/api/v1/payment', paymentRouter)
 
 // Handle errors
@@ -96,9 +98,9 @@ io.on('connection', (socket: Socket): void => {
   // Set session data
   // session.username = 'example'
   // session.save()
-  
-  //orderSocket(socket)
-  //adminSocket(socket)
+
+  orderSocket(socket)
+  adminSocket(socket)
 
   // Handle disconnect
   socket.on('disconnect', (): void => {

@@ -65,7 +65,7 @@ async function updateStaff (req: Request, res: Response, next: NextFunction): Pr
     const staff = await StaffModel.findOne({ where: { id: staffId, deletedAt: null } })
 
     if (staff == null) {
-      return res.status(404).send(`Customer with id ${staffId} not found`)
+      return res.status(404).send(`Staff with id ${staffId} not found`)
     }
 
     staff.imageUrl = imageUrl ?? staff.imageUrl

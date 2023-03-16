@@ -53,74 +53,33 @@ function getOrderById(req, res, next) {
 function addOrder(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            // Data format to be received from client
-            let receivedData = {
-                customer: {
-                    id,
-                    name,
-                    address,
-                    phoneNumber
-                },
-                order: {
-                    id,
-                    orderItems: [
-                        {
-                            id,
-                            menuItems: [
-                                {
-                                    id,
-                                    imageUrl,
-                                    name,
-                                    description,
-                                    price
-                                }
-                            ],
-                            quantity,
-                            notes
-                        }
-                    ],
-                    status,
-                    totalPrice
-                },
-                customerFeedback: {
-                    id,
-                    comment
-                },
-                staff: {
-                    id,
-                    name
-                }
-            };
+            const { customer, order, customerFeedback } = req.body;
             // Check if customer exists and create customer if not found
-            const customerId = Number(receivedData.customer.id);
-            const customer = yield customer_model_1.CustomerModel.findByPk(customerId);
-            if (customer == null) {
-                const { imageUrl, name, email, phoneNumber, address } = receivedData.customer;
+            const customerId = Number(customer.id);
+            const customerData = yield customer_model_1.CustomerModel.findByPk(customerId);
+            if (customerData == null) {
+                const { name } = customer;
                 yield customer_model_1.CustomerModel.create({
-                    imageUrl,
-                    name,
-                    email,
-                    phoneNumber,
-                    address
+                    name
                 });
             }
+            let customerFBId = null;
             // Check if customer feedback is available
-            if (receivedData.customerFeedback == null) {
-                const comment = receivedData.customerFeedback.comment;
-                const feedback = {
-                    comment
-                };
-                const customerfb = yield customer_feedback_model_1.CustomerFeedbackModel.create(feedback);
+            if (customerFeedback != null) {
+                const comment = customerFeedback.comment;
+                const customerfb = yield customer_feedback_model_1.CustomerFeedbackModel.create(comment);
+                customerFBId = customerfb.id;
             }
-            // TODO: for loop =>  Assign staff to deliver order
+            // Assign staff to deliver order
             const staffs = yield staff_model_1.StaffModel.findAll({
-                where: { deletedAt: null }
+                where: { deletedAt: null, role: 'delivery' }
             });
-            const customerid = receivedData.customer.id;
-            const customerFBId = customerfb.id;
+            const randomIndex = Math.floor(Math.random() * staffs.length);
+            // Choose a random staff
+            const staff = staffs[randomIndex];
             const status = 'pending';
-            const staffId;
-            const totalPrice = receivedData.order.totalPrice;
+            const staffId = staff.id;
+            const totalPrice = order.totalPrice;
             // Create order
             const orderData = {
                 customerId,
@@ -129,20 +88,25 @@ function addOrder(req, res, next) {
                 status,
                 totalPrice
             };
-            const order = yield order_model_1.OrderModel.create(orderData);
+            const orderResponse = yield order_model_1.OrderModel.create(orderData);
             // TODO: for loop => Create order item
-            const orderId = order.id;
-            const menuItemId = receivedData.order.orderItems.menuItems.id;
-            let orderItemData = {
-                orderId,
-                menuItemId,
-                quantity,
-                notes,
-            };
-            yield order_item_model_1.OrderItemModel.create(orderItemData);
+            const orderItemsReceived = order.orderItems;
+            for (const orderItemReceived of orderItemsReceived) {
+                const orderId = orderResponse.id;
+                const menuItemId = orderItemReceived.menuItem.id;
+                const quantity = orderItemReceived.quantity;
+                const notes = orderItemReceived.notes;
+                const orderItemData = {
+                    orderId,
+                    menuItemId,
+                    quantity,
+                    notes
+                };
+                yield order_item_model_1.OrderItemModel.create(orderItemData);
+            }
             return res.status(200).json({
                 status: true,
-                order
+                orderData
             });
         }
         catch (error) {

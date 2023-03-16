@@ -16,6 +16,10 @@ CustomerFeedbackModel.init({
     comment: {
         type: sequelize_1.DataTypes.TEXT,
         allowNull: false
+    },
+    deletedAt: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: true
     }
 }, {
     tableName: 'customer_feedback',

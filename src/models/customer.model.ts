@@ -8,6 +8,7 @@ interface CustomerAttributes {
   email: string | null
   phoneNumber: string | null
   address: string | null
+  deletedAt: Date | null
 }
 
 interface CustomerCreationAttributes extends Optional<CustomerAttributes, 'id'> {}
@@ -19,6 +20,7 @@ class CustomerModel extends Model<CustomerAttributes, CustomerCreationAttributes
   public email!: string | null
   public phoneNumber!: string | null
   public address!: string | null
+  public deletedAt!: Date | null
 }
 
 CustomerModel.init(
@@ -39,6 +41,7 @@ CustomerModel.init(
     },
     email: {
       type: DataTypes.STRING,
+      unique: true,
       allowNull: true
     },
     phoneNumber: {
@@ -47,6 +50,10 @@ CustomerModel.init(
     },
     address: {
       type: DataTypes.STRING,
+      allowNull: true
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
       allowNull: true
     }
   },

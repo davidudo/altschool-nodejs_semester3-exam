@@ -1,6 +1,6 @@
 import { type Request, type Response, type NextFunction } from 'express'
-import stripePackage from 'stripe'
-import { stripeConfig } from './configs/stripe.config.ts'
+import StripePackage from 'stripe'
+import { stripeConfig } from '../configs/stripe.config'
 import { PaymentModel, type PaymentAttributes } from '../models/payment.model'
 
 async function getAllPayments (req: Request, res: Response, next: NextFunction): Promise<any> {
@@ -41,14 +41,18 @@ async function getPaymentById (req: Request, res: Response, next: NextFunction):
 async function addPayment (req: Request, res: Response, next: NextFunction): Promise<any> {
   try {
     const { orderId, amount, paymentGateway } = req.body
-    
-    const stripe = new stripePackage(stripeConfig.apiKey)
-    
+
+    const config: StripePackage.StripeConfig = {
+      apiVersion: '2022-11-15'
+    }
+
+    const stripe = new StripePackage(stripeConfig.apiKey, config)
+
     const charge = await stripe.charges.create({
       amount,
       currency: 'usd',
       description: 'Example charge',
-      source: 'tok_visa', // replace with an actual token obtained from Stripe.js or Elements
+      source: 'tok_visa' // replace with an actual token obtained from Stripe.js or Elements
     })
 
     const payment: PaymentAttributes = await PaymentModel.create({
