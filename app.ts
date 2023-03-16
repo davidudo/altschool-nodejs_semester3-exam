@@ -12,6 +12,7 @@ import staffRouter from './src/routes/staff.route'
 import orderRouter from './src/routes/order.route'
 import paymentRouter from './src/routes/payment.route'
 import orderSocket from './src/sockets/order.socket'
+import adminSocket from './src/sockets/admin.socket'
 import { dbConnection } from './src/configs/db.config'
 
 void dbConnection()
@@ -34,6 +35,8 @@ app.disable('x-powered-by')
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(morgan('tiny'))
+
+app.use(express.static(`${process.env.PWD}/src/public`))
 
 // Routes
 app.get('/', (req: Request, res: Response) => {
@@ -85,6 +88,7 @@ io.use((socket: Socket, next) => {
 io.on('connection', (socket: Socket): void => {
   const socketId: string = socket.id
   console.log(`New connection: ${socketId}`)
+  socket.emit('connected', 'connected to backend server')
 
   const session = socket.request.httpVersion
   console.log(session)
@@ -92,10 +96,9 @@ io.on('connection', (socket: Socket): void => {
   // Set session data
   // session.username = 'example'
   // session.save()
-
-  socket.emit('connected', 'connected to backend server')
-
-  orderSocket(socket)
+  
+  //orderSocket(socket)
+  //adminSocket(socket)
 
   // Handle disconnect
   socket.on('disconnect', (): void => {

@@ -13,7 +13,7 @@ const customer_model_1 = require("../models/customer.model");
 function getAllCustomers(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const customers = yield customer_model_1.CustomerModel.findAll();
+            const customers = yield customer_model_1.CustomerModel.findAll({ where: { deletedAt: null } });
             return res.status(200).json({
                 status: true,
                 customers
@@ -28,7 +28,7 @@ function getCustomerById(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const customerId = Number(req.params.id);
-            const customer = yield customer_model_1.CustomerModel.findByPk(customerId);
+            const customer = yield customer_model_1.CustomerModel.findByPk({ where: { id: customerId, deletedAt: null } });
             if (customer == null) {
                 return res.status(404).json({ message: 'Customer not found' });
             }
@@ -69,7 +69,7 @@ function updateCustomer(req, res, next) {
         try {
             const customerId = Number(req.params.id);
             const { imageUrl, name, email, phoneNumber, address } = req.body;
-            const customer = yield customer_model_1.CustomerModel.findOne({ where: { id: customerId } });
+            const customer = yield customer_model_1.CustomerModel.findOne({ where: { id: customerId, deletedAt: null } });
             if (customer == null) {
                 return res.status(404).send(`Customer with id ${customerId} not found`);
             }
@@ -93,16 +93,20 @@ function deleteCustomer(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const customerId = Number(req.params.id);
-            const customer = yield customer_model_1.CustomerModel.findOne({ where: { id: customerId } });
-            if (customer == null) {
-                res.status(404).json({ error: 'Customer not found' });
-                return;
-            }
-            yield customer_model_1.CustomerModel.destroy({ where: { id: customerId } });
-            return res.status(200).json({
-                status: true,
-                message: 'Customer successfully deleted'
+            const customer = yield customer_model_1.CustomerModel.findOne({
+                where: { id: customerId, deletedAt: null }
             });
+            if (customer == null) {
+                return res.status(404).json({ message: 'Customer not found' });
+            }
+            else {
+                customer.deletedAt = new Date();
+                yield customer.save();
+                return res.status(200).json({
+                    status: true,
+                    message: 'Customer deleted successfully'
+                });
+            }
         }
         catch (error) {
             next(error);

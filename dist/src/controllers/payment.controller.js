@@ -8,7 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const stripe_1 = __importDefault(require("stripe"));
+const stripe_config_ts_1 = require("./configs/stripe.config.ts");
 const payment_model_1 = require("../models/payment.model");
 function getAllPayments(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -50,6 +55,13 @@ function addPayment(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { orderId, amount, paymentGateway } = req.body;
+            const stripe = new stripe_1.default(stripe_config_ts_1.stripeConfig.apiKey);
+            const charge = yield stripe.charges.create({
+                amount,
+                currency: 'usd',
+                description: 'Example charge',
+                source: 'tok_visa', // replace with an actual token obtained from Stripe.js or Elements
+            });
             const payment = yield payment_model_1.PaymentModel.create({
                 orderId,
                 amount,
@@ -57,7 +69,8 @@ function addPayment(req, res, next) {
             });
             return res.status(200).json({
                 status: true,
-                payment
+                payment,
+                charge
             });
         }
         catch (error) {

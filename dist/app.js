@@ -16,7 +16,6 @@ const customer_route_1 = __importDefault(require("./src/routes/customer.route"))
 const staff_route_1 = __importDefault(require("./src/routes/staff.route"));
 const order_route_1 = __importDefault(require("./src/routes/order.route"));
 const payment_route_1 = __importDefault(require("./src/routes/payment.route"));
-const order_socket_1 = __importDefault(require("./src/sockets/order.socket"));
 const db_config_1 = require("./src/configs/db.config");
 void (0, db_config_1.dbConnection)();
 dotenv_1.default.config();
@@ -32,6 +31,7 @@ app.disable('x-powered-by');
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use(express_1.default.json());
 app.use((0, morgan_1.default)('tiny'));
+app.use(express_1.default.static(`${process.env.PWD}/src/public`));
 // Routes
 app.get('/', (req, res) => {
     res.sendFile(`${PWD}/src/public/index.html`);
@@ -73,13 +73,14 @@ io.use((socket, next) => {
 io.on('connection', (socket) => {
     const socketId = socket.id;
     console.log(`New connection: ${socketId}`);
+    socket.emit('connected', 'connected to backend server');
     const session = socket.request.httpVersion;
     console.log(session);
     // Set session data
     // session.username = 'example'
     // session.save()
-    socket.emit('connected', 'connected to backend server');
-    (0, order_socket_1.default)(socket);
+    //orderSocket(socket)
+    //adminSocket(socket)
     // Handle disconnect
     socket.on('disconnect', () => {
         console.log(`Disconnected: ${socketId}`);

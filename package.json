@@ -23,6 +23,7 @@
   "dependencies": {
     "@types/express-session": "^1.17.6",
     "@types/socket.io": "^3.0.2",
+    "@types/stripe": "^8.0.417",
     "concurrently": "^7.6.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
@@ -31,7 +32,8 @@
     "morgan": "^1.10.0",
     "pg": "^8.10.0",
     "sequelize": "^6.29.3",
-    "socket.io": "^4.6.1"
+    "socket.io": "^4.6.1",
+    "stripe": "^11.14.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",

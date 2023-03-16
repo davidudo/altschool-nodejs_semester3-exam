@@ -3,7 +3,7 @@ import { CustomerModel, type CustomerAttributes } from '../models/customer.model
 
 async function getAllCustomers (req: Request, res: Response, next: NextFunction): Promise<any> {
   try {
-    const customers = await CustomerModel.findAll()
+    const customers = await CustomerModel.findAll({ where: { deletedAt: null } })
 
     return res.status(200).json({
       status: true,
@@ -18,7 +18,7 @@ async function getCustomerById (req: Request, res: Response, next: NextFunction)
   try {
     const customerId: number = Number(req.params.id)
 
-    const customer = await CustomerModel.findByPk(customerId)
+    const customer = await CustomerModel.findByPk({ where: { id: customerId, deletedAt: null } })
 
     if (customer == null) {
       return res.status(404).json({ message: 'Customer not found' })
@@ -60,7 +60,7 @@ async function updateCustomer (req: Request, res: Response, next: NextFunction):
     const customerId: number = Number(req.params.id)
     const { imageUrl, name, email, phoneNumber, address } = req.body
 
-    const customer = await CustomerModel.findOne({ where: { id: customerId } })
+    const customer = await CustomerModel.findOne({ where: { id: customerId, deletedAt: null } })
 
     if (customer == null) {
       return res.status(404).send(`Customer with id ${customerId} not found`)
@@ -85,20 +85,23 @@ async function updateCustomer (req: Request, res: Response, next: NextFunction):
 
 async function deleteCustomer (req: Request, res: Response, next: NextFunction): Promise<any> {
   try {
-    const customerId: number = Number(req.params.id)
-    const customer = await CustomerModel.findOne({ where: { id: customerId } })
+    const customerId = Number(req.params.id)
+    
+    const customer = await CustomerModel.findOne({
+      where: { id: customerId, deletedAt: null }
+    })
 
     if (customer == null) {
-      res.status(404).json({ error: 'Customer not found' })
-      return
+      return res.status(404).json({ message: 'Customer not found' })
+    } else {
+      customer.deletedAt = new Date()
+      await customer.save()
+
+      return res.status(200).json({
+        status: true,
+        message: 'Customer deleted successfully'
+      })
     }
-
-    await CustomerModel.destroy({ where: { id: customerId } })
-
-    return res.status(200).json({
-      status: true,
-      message: 'Customer successfully deleted'
-    })
   } catch (error) {
     next(error)
   }
