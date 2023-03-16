@@ -14,6 +14,9 @@ import menuItemRouter from './src/routes/menu_item.route'
 import paymentRouter from './src/routes/payment.route'
 import orderSocket from './src/sockets/order.socket'
 import adminSocket from './src/sockets/admin.socket'
+import { MenuItemModel } from './src/models/menu_item.model'
+import { OrderModel } from './src/models/order.model'
+import { OrderItemModel } from '../models/order_item.model'
 import { dbConnection } from './src/configs/db.config'
 
 void dbConnection()
@@ -90,16 +93,48 @@ io.use((socket: Socket, next) => {
 io.on('connection', (socket: Socket): void => {
   const socketId: string = socket.id
   console.log(`New connection: ${socketId}`)
-  socket.emit('connected', 'connected to backend server')
-
+  
   const session = socket.request.httpVersion
   console.log(session)
 
   // Set session data
   // session.username = 'example'
   // session.save()
+  
+  const welcomeMessageOptions = {}
+  
+  socket.emit('connected', { welomcomeMessageOptions })
+  
+  socket.on('select-options', (data) => {
+    switch (data) {
+      case 0 {
+        socket.emit('cancel-order', 'Order has been cancelled')
+        break
+      }
+      case 1 {
+        const message = 'This are what are on the menu today'
+        const menuList = await MenuItemModel.findAll({
+          where: { deletedAt: null }
+        })
+        socket.emit('place-order', { message, menuList })
+      }
+      case 97 {
+        
+      }
+      case 98 {
+        const orderHistory = await OrderItemModel.findAll({
+          where: {  deletedAt: null }
+        })
+      }
+      case 99 {
+        orderSocket(data)
+      }
+      default {
+        socket.emit('invalid-number', 'The number you entered is invalid')
+      }
+    }
+  })
 
-  orderSocket(socket)
   adminSocket(socket)
 
   // Handle disconnect
