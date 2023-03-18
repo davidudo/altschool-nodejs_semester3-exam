@@ -35,6 +35,7 @@ MenuItemModel.init({
     }
 }, {
     tableName: 'menu_item',
+    modelName: 'MenuItemModel',
     sequelize: db_config_1.connection,
     timestamps: true
 });

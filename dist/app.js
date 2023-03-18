@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -18,7 +27,10 @@ const order_route_1 = __importDefault(require("./src/routes/order.route"));
 const menu_item_route_1 = __importDefault(require("./src/routes/menu_item.route"));
 const payment_route_1 = __importDefault(require("./src/routes/payment.route"));
 const order_socket_1 = __importDefault(require("./src/sockets/order.socket"));
-const admin_socket_1 = __importDefault(require("./src/sockets/admin.socket"));
+const menu_item_model_1 = require("./src/models/menu_item.model");
+const order_model_1 = require("./src/models/order.model");
+const order_item_model_1 = require("./src/models/order_item.model");
+const customer_model_1 = require("./src/models/customer.model");
 const db_config_1 = require("./src/configs/db.config");
 void (0, db_config_1.dbConnection)();
 dotenv_1.default.config();
@@ -77,14 +89,132 @@ io.use((socket, next) => {
 io.on('connection', (socket) => {
     const socketId = socket.id;
     console.log(`New connection: ${socketId}`);
-    socket.emit('connected', 'connected to backend server');
     const session = socket.request.httpVersion;
     console.log(session);
     // Set session data
     // session.username = 'example'
     // session.save()
-    (0, order_socket_1.default)(socket);
-    (0, admin_socket_1.default)(socket);
+    const welcomeMessage = `
+      Welcome to QuickOrder<br>
+      <br>
+      Select 1 to Place an order<br>
+      Select 99 to checkout order<br>
+      Select 98 to see order history<br>
+      Select 97 to see current order<br>
+      Select 0 to cancel order<br>
+    `;
+    let menuMessage = '';
+    let orderHistory = [];
+    let currentOrder = {};
+    let menuList = [];
+    let menuItems = [];
+    let orderToCancel = {};
+    let customerId = 0;
+    let orderId = 0;
+    socket.on('id-customer', (customerId) => {
+        var _a;
+        if ((_a = customerId == null) !== null && _a !== void 0 ? _a : customerId === undefined) {
+            socket.emit('id-customer', 'What is your name?');
+            socket.on('create-customer', (name) => __awaiter(void 0, void 0, void 0, function* () {
+                const customer = yield customer_model_1.CustomerModel.create({ name });
+                console.log(customer.id);
+                socket.emit('store-customer', customer);
+                socket.emit('connected', welcomeMessage);
+            }));
+        }
+    });
+    socket.emit('connected', welcomeMessage);
+    socket.on('select-options', (data) => __awaiter(void 0, void 0, void 0, function* () {
+        switch (data.option) {
+            case 0:
+                orderId = data.orderId;
+                orderToCancel = yield order_model_1.OrderModel.findOne({
+                    where: { id: orderId },
+                    order: [['createdAt', 'DESC']]
+                });
+                if (orderToCancel == null) {
+                    socket.emit('cancel-order', 'Order not found');
+                    break;
+                }
+                orderToCancel.status = 'canceled';
+                yield orderToCancel.save();
+                socket.emit('cancel-order', 'Your order has been cancelled');
+                break;
+            case 1:
+                menuList = yield menu_item_model_1.MenuItemModel.findAll({
+                    where: { deletedAt: null }
+                });
+                menuItems = menuList.map((item) => `${item.id} - ${item.name} - ${item.price}`);
+                menuMessage = `
+          These are the available menu items<br>
+          Please select the items you would like to order<br>
+          <br>
+          ${menuItems.join('<br>')}
+        `;
+                socket.emit('place-order', menuMessage);
+                break;
+            case 97:
+                currentOrder = yield order_model_1.OrderModel.findOne({
+                    where: { customerId },
+                    include: [
+                        {
+                            model: order_item_model_1.OrderItemModel,
+                            as: 'orderItems',
+                            include: [
+                                {
+                                    model: menu_item_model_1.MenuItemModel,
+                                    as: 'menuItem',
+                                    attributes: ['id', 'name', 'price']
+                                }
+                            ]
+                        }
+                    ],
+                    order: [['createdAt', 'DESC']]
+                });
+                if (currentOrder == null) {
+                    currentOrder = 'You have made no order';
+                }
+                socket.emit('current-order', currentOrder);
+                break;
+            case 98:
+                customerId = data.customerId;
+                try {
+                    orderHistory = yield order_model_1.OrderModel.findAll({
+                        where: { customerId },
+                        include: [
+                            {
+                                model: order_item_model_1.OrderItemModel,
+                                as: 'orderItems',
+                                include: [
+                                    {
+                                        model: menu_item_model_1.MenuItemModel,
+                                        as: 'menuItem',
+                                        attributes: ['id', 'name', 'price']
+                                    }
+                                ]
+                            }
+                        ],
+                        order: [['createdAt', 'DESC']]
+                    });
+                    if (orderHistory.length === 0) {
+                        orderHistory = 'You have made no order';
+                    }
+                    socket.emit('order-history', orderHistory);
+                }
+                catch (error) {
+                    console.error('Error fetching order history:', error);
+                    throw error;
+                }
+                break;
+            case 99:
+                void (0, order_socket_1.default)(socket, data);
+                break;
+            default:
+                socket.emit('invalid-number', 'The number you entered is invalid');
+                break;
+        }
+    }));
+    // adminSocket(socket)
     // Handle disconnect
     socket.on('disconnect', () => {
         console.log(`Disconnected: ${socketId}`);

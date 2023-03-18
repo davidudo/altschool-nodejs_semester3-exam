@@ -59,6 +59,7 @@ CustomerModel.init(
   },
   {
     tableName: 'customer',
+    modelName: 'CustomerModel',
     sequelize: connection,
     timestamps: true
     // Other model options go here

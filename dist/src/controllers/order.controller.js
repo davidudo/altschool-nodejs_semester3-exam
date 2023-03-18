@@ -12,14 +12,49 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const order_model_1 = require("../models/order.model");
 const order_item_model_1 = require("../models/order_item.model");
 const customer_model_1 = require("../models/customer.model");
+const menu_item_model_1 = require("../models/menu_item.model");
 const customer_feedback_model_1 = require("../models/customer_feedback.model");
 const staff_model_1 = require("../models/staff.model");
 function getAllOrders(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const { customerId } = req.body;
+            const whereObject = { deletedAt: null };
+            if (customerId != null) {
+                whereObject.customerId = customerId;
+            }
             const orders = yield order_model_1.OrderModel.findAll({
-                where: { deletedAt: null }
+                where: whereObject,
+                include: [
+                    {
+                        model: order_item_model_1.OrderItemModel,
+                        as: 'orderItems',
+                        include: [
+                            {
+                                model: menu_item_model_1.MenuItemModel,
+                                as: 'menuItem',
+                                attributes: ['id', 'name', 'price']
+                            }
+                        ]
+                    },
+                    {
+                        model: staff_model_1.StaffModel,
+                        as: 'staff'
+                    },
+                    {
+                        model: customer_model_1.CustomerModel,
+                        as: 'customer'
+                    },
+                    {
+                        model: customer_feedback_model_1.CustomerFeedbackModel,
+                        as: 'customerFeedback'
+                    }
+                ],
+                order: [['createdAt', 'DESC']]
             });
+            if (orders.length === 0) {
+                return res.status(404).json({ message: 'No order found' });
+            }
             return res.status(200).json({
                 status: true,
                 orders
@@ -67,7 +102,8 @@ function addOrder(req, res, next) {
             // Check if customer feedback is available
             if (customerFeedback != null) {
                 const comment = customerFeedback.comment;
-                const customerfb = yield customer_feedback_model_1.CustomerFeedbackModel.create(comment);
+                console.log({ comment });
+                const customerfb = yield customer_feedback_model_1.CustomerFeedbackModel.create({ comment });
                 customerFBId = customerfb.id;
             }
             // Assign staff to deliver order
@@ -89,7 +125,7 @@ function addOrder(req, res, next) {
                 totalPrice
             };
             const orderResponse = yield order_model_1.OrderModel.create(orderData);
-            // TODO: for loop => Create order item
+            // Create order item
             const orderItemsReceived = order.orderItems;
             for (const orderItemReceived of orderItemsReceived) {
                 const orderId = orderResponse.id;

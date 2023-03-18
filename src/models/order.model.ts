@@ -9,7 +9,7 @@ interface OrderAttributes {
   customerId: number
   customerFBId: number | null
   staffId: number
-  status: 'pending' | 'accepted' | 'delivered' | 'canceled'
+  status: 'pending' | 'accepted' | 'delivered' | 'canceled' | 'expired'
   totalPrice: number
   deletedAt: Date | null
 }
@@ -21,7 +21,7 @@ class OrderModel extends Model<OrderAttributes, OrderCreationAttributes> impleme
   public customerId!: number
   public customerFBId!: number | null
   public staffId!: number
-  public status!: 'pending' | 'accepted' | 'delivered' | 'canceled'
+  public status!: 'pending' | 'accepted' | 'delivered' | 'canceled' | 'expired'
   public totalPrice!: number
   public deletedAt!: Date | null
 
@@ -61,7 +61,7 @@ OrderModel.init(
       }
     },
     status: {
-      type: DataTypes.ENUM('pending', 'accepted', 'delivered', 'canceled'),
+      type: DataTypes.ENUM('pending', 'accepted', 'delivered', 'canceled', 'expired'),
       defaultValue: 'pending',
       allowNull: false
     },
@@ -77,12 +77,18 @@ OrderModel.init(
   {
     sequelize: connection,
     tableName: 'order',
+    modelName: 'OrderModel',
     timestamps: true
   }
 )
 
-OrderModel.belongsTo(CustomerModel, { foreignKey: 'customer_id', as: 'customer' })
+OrderModel.belongsTo(CustomerModel, { foreignKey: 'customerId', as: 'customer' })
+CustomerModel.hasMany(OrderModel, { foreignKey: 'customerId', as: 'orders' })
+
 OrderModel.hasOne(CustomerFeedbackModel, { foreignKey: 'customerFBId', as: 'customerFeedback' })
+CustomerFeedbackModel.belongsTo(OrderModel, { foreignKey: 'customerFBId', as: 'order' })
+
 OrderModel.hasOne(StaffModel, { foreignKey: 'staffId', as: 'staff' })
+StaffModel.belongsTo(OrderModel, { foreignKey: 'staffId', as: 'order' })
 
 export { OrderModel, type OrderAttributes }

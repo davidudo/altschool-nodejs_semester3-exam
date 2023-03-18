@@ -23,6 +23,7 @@ CustomerFeedbackModel.init({
     }
 }, {
     tableName: 'customer_feedback',
+    modelName: 'CustomerFeedbackModel',
     sequelize: db_config_1.connection,
     timestamps: true
 });

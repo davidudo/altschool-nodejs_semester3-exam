@@ -2,14 +2,52 @@ import { type Request, type Response, type NextFunction } from 'express'
 import { OrderModel, type OrderAttributes } from '../models/order.model'
 import { OrderItemModel } from '../models/order_item.model'
 import { CustomerModel, type CustomerAttributes } from '../models/customer.model'
+import { MenuItemModel } from '../models/menu_item.model'
 import { CustomerFeedbackModel, type CustomerFBAttributes } from '../models/customer_feedback.model'
 import { StaffModel } from '../models/staff.model'
 
 async function getAllOrders (req: Request, res: Response, next: NextFunction): Promise<any> {
   try {
+    const { customerId } = req.body
+    const whereObject: any = { deletedAt: null }
+
+    if (customerId != null) {
+      whereObject.customerId = customerId
+    }
+
     const orders = await OrderModel.findAll({
-      where: { deletedAt: null }
+      where: whereObject,
+      include: [
+        {
+          model: OrderItemModel,
+          as: 'orderItems',
+          include: [
+            {
+              model: MenuItemModel,
+              as: 'menuItem',
+              attributes: ['id', 'name', 'price']
+            }
+          ]
+        },
+        {
+          model: StaffModel,
+          as: 'staff'
+        },
+        {
+          model: CustomerModel,
+          as: 'customer'
+        },
+        {
+          model: CustomerFeedbackModel,
+          as: 'customerFeedback'
+        }
+      ],
+      order: [['createdAt', 'DESC']]
     })
+
+    if (orders.length === 0) {
+      return res.status(404).json({ message: 'No order found' })
+    }
 
     return res.status(200).json({
       status: true,
@@ -68,8 +106,9 @@ async function addOrder (req: Request, res: Response, next: NextFunction): Promi
     // Check if customer feedback is available
     if (customerFeedback != null) {
       const comment = customerFeedback.comment
+      console.log({ comment })
 
-      const customerfb: CustomerFBAttributes = await CustomerFeedbackModel.create(comment)
+      const customerfb: CustomerFBAttributes = await CustomerFeedbackModel.create({ comment })
 
       customerFBId = customerfb.id
     }
@@ -99,7 +138,7 @@ async function addOrder (req: Request, res: Response, next: NextFunction): Promi
 
     const orderResponse: OrderAttributes = await OrderModel.create(orderData)
 
-    // TODO: for loop => Create order item
+    // Create order item
     const orderItemsReceived = order.orderItems
 
     for (const orderItemReceived of orderItemsReceived) {

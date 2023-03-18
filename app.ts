@@ -16,7 +16,8 @@ import orderSocket from './src/sockets/order.socket'
 import adminSocket from './src/sockets/admin.socket'
 import { MenuItemModel } from './src/models/menu_item.model'
 import { OrderModel } from './src/models/order.model'
-import { OrderItemModel } from '../models/order_item.model'
+import { OrderItemModel } from './src/models/order_item.model'
+import { CustomerModel } from './src/models/customer.model'
 import { dbConnection } from './src/configs/db.config'
 
 void dbConnection()
@@ -93,49 +94,160 @@ io.use((socket: Socket, next) => {
 io.on('connection', (socket: Socket): void => {
   const socketId: string = socket.id
   console.log(`New connection: ${socketId}`)
-  
+
   const session = socket.request.httpVersion
   console.log(session)
 
   // Set session data
   // session.username = 'example'
   // session.save()
-  
-  const welcomeMessageOptions = {}
-  
-  socket.emit('connected', { welomcomeMessageOptions })
-  
-  socket.on('select-options', (data) => {
-    switch (data) {
-      case 0 {
-        socket.emit('cancel-order', 'Order has been cancelled')
-        break
-      }
-      case 1 {
-        const message = 'This are what are on the menu today'
-        const menuList = await MenuItemModel.findAll({
-          where: { deletedAt: null }
-        })
-        socket.emit('place-order', { message, menuList })
-      }
-      case 97 {
-        
-      }
-      case 98 {
-        const orderHistory = await OrderItemModel.findAll({
-          where: {  deletedAt: null }
-        })
-      }
-      case 99 {
-        orderSocket(data)
-      }
-      default {
-        socket.emit('invalid-number', 'The number you entered is invalid')
-      }
+
+  const welcomeMessage: string = `
+      Welcome to QuickOrder<br>
+      <br>
+      Select 1 to Place an order<br>
+      Select 99 to checkout order<br>
+      Select 98 to see order history<br>
+      Select 97 to see current order<br>
+      Select 0 to cancel order<br>
+    `
+
+  let menuMessage: string = ''
+  let orderHistory: any = []
+  let currentOrder: any = {}
+  let menuList: MenuItemModel[] = []
+  let menuItems: string[] = []
+  let orderToCancel: any = {}
+
+  let customerId: number = 0
+  let orderId: number = 0
+
+  socket.on('id-customer', (customerId) => {
+    if (customerId == null ?? customerId === undefined) {
+      socket.emit('id-customer', 'What is your name?')
+
+      socket.on('create-customer', async (name) => {
+        const customer = await CustomerModel.create({ name })
+
+        console.log(customer.id)
+
+        socket.emit('store-customer', customer)
+        socket.emit('connected', welcomeMessage)
+      })
     }
   })
 
-  adminSocket(socket)
+  socket.emit('connected', welcomeMessage)
+
+  socket.on('select-options', async (data) => {
+    switch (data.option) {
+      case 0:
+        orderId = data.orderId
+
+        orderToCancel = await OrderModel.findOne({
+          where: { id: orderId },
+          order: [['createdAt', 'DESC']]
+        })
+
+        if (orderToCancel == null) {
+          socket.emit('cancel-order', 'Order not found')
+          break
+        }
+
+        orderToCancel.status = 'canceled'
+
+        await orderToCancel.save()
+
+        socket.emit('cancel-order', 'Your order has been cancelled')
+        break
+
+      case 1:
+        menuList = await MenuItemModel.findAll({
+          where: { deletedAt: null }
+        })
+
+        menuItems = menuList.map((item) => `${item.id} - ${item.name} - ${item.price}`)
+
+        menuMessage = `
+          These are the available menu items<br>
+          Please select the items you would like to order<br>
+          <br>
+          ${menuItems.join('<br>')}
+        `
+
+        socket.emit('place-order', menuMessage)
+        break
+
+      case 97:
+        currentOrder = await OrderModel.findOne({
+          where: { customerId },
+          include: [
+            {
+              model: OrderItemModel,
+              as: 'orderItems',
+              include: [
+                {
+                  model: MenuItemModel,
+                  as: 'menuItem',
+                  attributes: ['id', 'name', 'price']
+                }
+              ]
+            }
+          ],
+          order: [['createdAt', 'DESC']]
+        })
+
+        if (currentOrder == null) {
+          currentOrder = 'You have made no order'
+        }
+
+        socket.emit('current-order', currentOrder)
+        break
+
+      case 98:
+        customerId = data.customerId
+
+        try {
+          orderHistory = await OrderModel.findAll({
+            where: { customerId },
+            include: [
+              {
+                model: OrderItemModel,
+                as: 'orderItems',
+                include: [
+                  {
+                    model: MenuItemModel,
+                    as: 'menuItem',
+                    attributes: ['id', 'name', 'price']
+                  }
+                ]
+              }
+            ],
+            order: [['createdAt', 'DESC']]
+          })
+
+          if (orderHistory.length === 0) {
+            orderHistory = 'You have made no order'
+          }
+
+          socket.emit('order-history', orderHistory)
+        } catch (error) {
+          console.error('Error fetching order history:', error)
+          throw error
+        }
+        break
+
+      case 99:
+        void orderSocket(socket, data)
+        break
+
+      default:
+        socket.emit('invalid-number', 'The number you entered is invalid')
+        break
+    }
+  })
+
+  // adminSocket(socket)
 
   // Handle disconnect
   socket.on('disconnect', (): void => {

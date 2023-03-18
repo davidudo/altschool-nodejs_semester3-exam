@@ -39,7 +39,7 @@ OrderModel.init({
         }
     },
     status: {
-        type: sequelize_1.DataTypes.ENUM('pending', 'accepted', 'delivered', 'canceled'),
+        type: sequelize_1.DataTypes.ENUM('pending', 'accepted', 'delivered', 'canceled', 'expired'),
         defaultValue: 'pending',
         allowNull: false
     },
@@ -54,8 +54,12 @@ OrderModel.init({
 }, {
     sequelize: db_config_1.connection,
     tableName: 'order',
+    modelName: 'OrderModel',
     timestamps: true
 });
-OrderModel.belongsTo(customer_model_1.CustomerModel, { foreignKey: 'customer_id', as: 'customer' });
+OrderModel.belongsTo(customer_model_1.CustomerModel, { foreignKey: 'customerId', as: 'customer' });
+customer_model_1.CustomerModel.hasMany(OrderModel, { foreignKey: 'customerId', as: 'orders' });
 OrderModel.hasOne(customer_feedback_model_1.CustomerFeedbackModel, { foreignKey: 'customerFBId', as: 'customerFeedback' });
+customer_feedback_model_1.CustomerFeedbackModel.belongsTo(OrderModel, { foreignKey: 'customerFBId', as: 'order' });
 OrderModel.hasOne(staff_model_1.StaffModel, { foreignKey: 'staffId', as: 'staff' });
+staff_model_1.StaffModel.belongsTo(OrderModel, { foreignKey: 'staffId', as: 'order' });

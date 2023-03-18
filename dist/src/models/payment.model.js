@@ -34,7 +34,9 @@ PaymentModel.init({
     }
 }, {
     tableName: 'payment',
+    modelName: 'PaymentModel',
     sequelize: db_config_1.connection,
     timestamps: true
 });
 PaymentModel.hasOne(order_model_1.OrderModel, { foreignKey: 'orderId', as: 'order' });
+order_model_1.OrderModel.belongsTo(PaymentModel, { foreignKey: 'orderId', as: 'payment' });

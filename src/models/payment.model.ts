@@ -52,11 +52,13 @@ PaymentModel.init(
   },
   {
     tableName: 'payment',
+    modelName: 'PaymentModel',
     sequelize: connection,
     timestamps: true
   }
 )
 
 PaymentModel.hasOne(OrderModel, { foreignKey: 'orderId', as: 'order' })
+OrderModel.belongsTo(PaymentModel, { foreignKey: 'orderId', as: 'payment' })
 
 export { PaymentModel, type PaymentAttributes }

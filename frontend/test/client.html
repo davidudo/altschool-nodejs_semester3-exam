@@ -14,37 +14,39 @@
     const socket = io('ws://localhost:8000');
 
     socket.on('connected', (data) => {
-      console.log(`Message received: ${data}`);
+      console.log(data);
     });
+
+    let optionData = {
+      option: 97,
+      customerId: 1,
+    }
     
-    socket.emit('make-order', 'I want to order something');
+    socket.emit('select-options', optionData);
     
-    socket.on('order-status' (data) => {
+    socket.on('order-status', (data) => {
       console.log(data)
     })
-    
-    /*
-    const messagesDiv = document.querySelector('#messages');
-    const messageForm = document.querySelector('#message-form');
-    const messageInput = document.querySelector('#message-input');
 
-    messageForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const message = messageInput.value.trim();
-      if (message) {
-        console.log(`Sending message: ${message}`);
-        socket.emit('make-order', message);
-        messageInput.value = '';
-      }
-    });
+    socket.on('invalid-number', (data) => {
+      console.log(data)
+    })
 
-    socket.on('accept-order', (data) => {
-      console.log(`Message received: ${data}`);
-      const messageElement = document.createElement('div');
-      messageElement.textContent = data;
-      messagesDiv.appendChild(messageElement);
-    });
-    */
+    socket.on('cancel-order', (data) => {
+      console.log(data)
+    })
+
+    socket.on('place-order', (data) => {
+      console.log(data)
+    })
+
+    socket.on('order-history', (data) => {
+      console.log(data)
+    })
+
+    socket.on('current-order', (data) => {
+      console.log(data)
+    })
   </script>
 </body>
 </html>

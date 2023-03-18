@@ -40,6 +40,7 @@ CustomerModel.init({
     }
 }, {
     tableName: 'customer',
+    modelName: 'CustomerModel',
     sequelize: db_config_1.connection,
     timestamps: true
     // Other model options go here

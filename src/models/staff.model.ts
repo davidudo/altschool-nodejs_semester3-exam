@@ -52,8 +52,7 @@ StaffModel.init(
     },
     rating: {
       type: DataTypes.ENUM('1', '2', '3', '4', '5'),
-      defaultValue: '1',
-      allowNull: false
+      allowNull: true
     },
     deletedAt: {
       type: DataTypes.DATE,
@@ -62,6 +61,7 @@ StaffModel.init(
   },
   {
     tableName: 'staff',
+    modelName: 'StaffModel',
     sequelize: connection,
     timestamps: true,
     underscored: true

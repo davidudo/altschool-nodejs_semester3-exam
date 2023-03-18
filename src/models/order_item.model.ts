@@ -50,6 +50,7 @@ OrderItemModel.init(
     },
     quantity: {
       type: DataTypes.INTEGER,
+      defaultValue: 1,
       allowNull: false
     },
     notes: {
@@ -63,12 +64,16 @@ OrderItemModel.init(
   },
   {
     tableName: 'order_item',
+    modelName: 'OrderItem',
     sequelize: connection,
     timestamps: true
   }
 )
 
 OrderItemModel.belongsTo(OrderModel, { foreignKey: 'orderId', as: 'order' })
+OrderModel.hasMany(OrderItemModel, { foreignKey: 'orderId', as: 'orderItems' })
+
+MenuItemModel.belongsTo(OrderItemModel, { foreignKey: 'menuItemId', as: 'orderItem' })
 OrderItemModel.hasOne(MenuItemModel, { foreignKey: 'menuItemId', as: 'menuItem' })
 
 export { OrderItemModel, type OrderItemAttributes }
