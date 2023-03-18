@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Customer Order App</title>
+</head>
+<body>
+  <div id="messages"></div>
+  <form id="message-form">
+    <input type="text" id="message-input">
+    <button type="submit">Send</button>
+  </form>
+  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+  <script>
+    const socket = io('ws://localhost:8000');
+
+    socket.on('connected', (data) => {
+      console.log(data);
+    });
+
+    let optionData = {
+      option: 97,
+      customerId: 1,
+    }
+    
+    socket.emit('select-options', optionData);
+    
+    socket.on('order-status', (data) => {
+      console.log(data)
+    })
+
+    socket.on('invalid-number', (data) => {
+      console.log(data)
+    })
+
+    socket.on('cancel-order', (data) => {
+      console.log(data)
+    })
+
+    socket.on('place-order', (data) => {
+      console.log(data)
+    })
+
+    socket.on('order-history', (data) => {
+      console.log(data)
+    })
+
+    socket.on('current-order', (data) => {
+      console.log(data)
+    })
+  </script>
+</body>
+</html>
