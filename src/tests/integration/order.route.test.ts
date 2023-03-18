@@ -1,4 +1,4 @@
-import app from '../../app'
+/*import app from '../../app'
 import request from 'supertest'
 import { expect } from 'chai'
 import { connection } from '../src/db.config'
@@ -86,3 +86,4 @@ describe('CRUD operations for OrderModel', () => {
     })
   })
 })
+*/

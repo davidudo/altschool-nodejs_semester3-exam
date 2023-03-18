@@ -221,5 +221,6 @@ io.on('connection', (socket) => {
     });
 });
 server.listen(PORT, HOST, () => {
-    console.log(`Server is running at http://${HOST}:${PORT}`);
+    console.log(`Server is running at http://${HOST}:${PORT}`.yellow.bold);
 });
+modules.export = app;

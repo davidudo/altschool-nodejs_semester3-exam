@@ -1,4 +1,4 @@
-import colors from 'colors'
+/*import colors from 'colors'
 import { OrderModel } from '../models/order.model'
 import { OrderItemModel } from '../models/order_item.model'
 import { MenuItemModel } from '../models/menu_item.model'
@@ -30,3 +30,4 @@ sequelize.sync({ force: true }).then(async () => {
 
   console.log('Database seeding completed!'.green.bold);
 });
+*/
