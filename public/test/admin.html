@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+</head>
+<body>
+  <div id="messages"></div>
+  <form id="message-form">
+    <input type="text" id="message-input">
+    <button type="submit">Send</button>
+  </form>
+  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+  <script>
+    const socket = io('ws://localhost:8000');
+
+    socket.on('connected', (data) => {
+      console.log(`Message received: ${data}`);
+    });
+    
+    socket.on('make-order', (data) => {
+      console.log(data);
+    });
+    
+    socket.emit('order-status' (data) => {
+      console.log(data)
+    })
+    
+    /*
+    const messagesDiv = document.querySelector('#messages');
+    const messageForm = document.querySelector('#message-form');
+    const messageInput = document.querySelector('#message-input');
+
+    messageForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const message = messageInput.value.trim();
+      if (message) {
+        console.log(`Sending message: ${message}`);
+        socket.emit('make-order', message);
+        messageInput.value = '';
+      }
+    });
+
+    socket.on('accept-order', (data) => {
+      console.log(`Message received: ${data}`);
+      const messageElement = document.createElement('div');
+      messageElement.textContent = data;
+      messagesDiv.appendChild(messageElement);
+    });
+    */
+  </script>
+</body>
+</html>
