@@ -21,112 +21,13 @@
     <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
      <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" /></svg>
    </div>
-   <img class="user-profile" src="https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-512.png" alt="" class="account-profile" alt="">
+   <a class="user-profile" href="./chef_dashboard/public/index.html">
+    <img class="user-profile" src="https://cdn-icons-png.flaticon.com/512/3603/3603959.png" alt="">
+   </a>
   </div>
  </div>
  <div class="wrapper">
   <div class="conversation-area">
-   <div class="msg">
-    <img class="msg-profile" src="https://www.rawshorts.com/freeicons/wp-content/uploads/2017/01/orange_travelpictdinner_1484336833.png" alt="" />
-    <div class="msg-detail">
-     <div class="msg-username">Order Id</div>
-     <div class="msg-content">
-      <span class="msg-message">21/02/2023</span>
-      <span class="msg-date">12:30</span>
-     </div>
-    </div>
-   </div>
-   <div class="msg">
-    <img class="msg-profile" src="https://www.rawshorts.com/freeicons/wp-content/uploads/2017/01/orange_travelpictdinner_1484336833.png" alt="" />
-    <div class="msg-detail">
-      <div class="msg-username">Order Id</div>
-      <div class="msg-content">
-       <span class="msg-message">21/02/2023</span>
-       <span class="msg-date">12:30</span>
-      </div>
-    </div>
-   </div>
-   <div class="msg">
-    <img class="msg-profile" src="https://www.rawshorts.com/freeicons/wp-content/uploads/2017/01/orange_travelpictdinner_1484336833.png" alt="" />
-    <div class="msg-detail">
-      <div class="msg-username">Order Id</div>
-      <div class="msg-content">
-       <span class="msg-message">21/02/2023</span>
-       <span class="msg-date">12:30</span>
-      </div>
-    </div>
-   </div>
-   <div class="msg">
-    <img class="msg-profile" src="https://www.rawshorts.com/freeicons/wp-content/uploads/2017/01/orange_travelpictdinner_1484336833.png" alt="" />
-    <div class="msg-detail">
-     <div class="msg-username">Order Id</div>
-     <div class="msg-content">
-      <span class="msg-message">21/02/2023</span>
-      <span class="msg-date">12:30</span>
-     </div>
-    </div>
-   </div>
-   <div class="msg">
-    <img class="msg-profile" src="https://www.rawshorts.com/freeicons/wp-content/uploads/2017/01/orange_travelpictdinner_1484336833.png" alt="" />
-    <div class="msg-detail">
-      <div class="msg-username">Order Id</div>
-      <div class="msg-content">
-       <span class="msg-message">21/02/2023</span>
-       <span class="msg-date">12:30</span>
-      </div>
-    </div>
-   </div>
-   <div class="msg">
-    <img class="msg-profile" src="https://www.rawshorts.com/freeicons/wp-content/uploads/2017/01/orange_travelpictdinner_1484336833.png" alt="" />
-    <div class="msg-detail">
-      <div class="msg-username">Order Id</div>
-      <div class="msg-content">
-       <span class="msg-message">21/02/2023</span>
-       <span class="msg-date">12:30</span>
-      </div>
-    </div>
-   </div>
-   <div class="msg">
-    <img class="msg-profile" src="https://www.rawshorts.com/freeicons/wp-content/uploads/2017/01/orange_travelpictdinner_1484336833.png" alt="">
-    <div class="msg-detail">
-      <div class="msg-username">Order Id</div>
-      <div class="msg-content">
-       <span class="msg-message">21/02/2023</span>
-       <span class="msg-date">12:30</span>
-      </div>
-    </div>
-   </div>
-   <div class="msg">
-    <img class="msg-profile" src="https://www.rawshorts.com/freeicons/wp-content/uploads/2017/01/orange_travelpictdinner_1484336833.png" alt="" />
-    <div class="msg-detail">
-      <div class="msg-username">Order Id</div>
-      <div class="msg-content">
-       <span class="msg-message">21/02/2023</span>
-       <span class="msg-date">12:30</span>
-      </div>
-    </div>
-   </div>
-   <div class="msg">
-    <img class="msg-profile" src="https://www.rawshorts.com/freeicons/wp-content/uploads/2017/01/orange_travelpictdinner_1484336833.png" alt="" />
-    <div class="msg-detail">
-      <div class="msg-username">Order Id</div>
-      <div class="msg-content">
-       <span class="msg-message">21/02/2023</span>
-       <span class="msg-date">12:30</span>
-      </div>
-    </div>
-   </div>
-   <div class="msg">
-    <img class="msg-profile" src="https://www.rawshorts.com/freeicons/wp-content/uploads/2017/01/orange_travelpictdinner_1484336833.png" alt="" />
-    <div class="msg-detail">
-      <div class="msg-username">Order Id</div>
-      <div class="msg-content">
-       <span class="msg-message">21/02/2023</span>
-       <span class="msg-date">12:30</span>
-      </div>
-    </div>
-   </div>
-   <div class="overlay"></div>
   </div>
   <div class="chat-area">
    <div class="chat-area-header">
@@ -151,7 +52,7 @@
     <div class="detail-subtitle">Joined, 1 May 2020</div>
     <div class="detail-buttons">
      <button class="detail-button">
-      Call Support
+      Admin
      </button>
      <button class="detail-button">
       View Docs
@@ -188,6 +89,8 @@
 
 <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
 <script>
+  // TODO: Clear customerId default
+
   const socket = io('https://altschool-quickorder.onrender.com')
 
   let chatAreaMain = document.querySelector('.chat-area-main')
@@ -199,12 +102,14 @@
   let chatMessage = ''
   let chatMsg = ''
   let ownerClass = ''
-  let customerIsKnown = false
+  let customerIsKnown
 
   if (customerId === null || customerId === undefined) {
     customerIsKnown = false
+  } else {
+    customerIsKnown = true
   }
-  
+
   let currentDate = new Date()
   let dateOptions = {weekday: 'short', month: 'short', day: 'numeric'}
   const timeOptions = {hour: 'numeric', minute: 'numeric'}
@@ -255,8 +160,6 @@
       return
     }
 
-    console.log(customerIsKnown)
-
     if (customerIsKnown == false) {
       socket.emit('create-customer', chatInputValue)
       
@@ -268,10 +171,43 @@
 
       chatInput.value = ''
     } else {
+      let orderData = {
+        customer: {
+          id: localStorage.getItem('customerId'),
+          name: localStorage.getItem('customerName')
+        },
+        order: {
+          id: 1,
+          orderItems: [
+            {
+              menuItem: {
+                "id": 1
+                "price": 2000
+              },
+              notes: "Extra spicy"
+            },
+            {
+              menuItem: {
+                id: 2
+              },
+              notes: "Extra spicy"
+            }
+          ],
+          totalPrice: 1000
+        },
+        customerFeedback: {
+          id: 1,
+          feedback: "Good"
+        }
+      }
+
+      // Reduce 
+
       let optionData = {
         option: Number(chatInputValue),
         customerId: 1,
         orderId: 1,
+        orderData
       }
 
       socket.emit('select-options', optionData)
@@ -348,17 +284,51 @@
   
   
   const url = 'http://localhost:8000/api/v1/order'
-  
+  const orderHistoryContainer = document.querySelector('.conversation-area')
+
   const getOrders = () => {
     try {
       fetch(`${url}?${new URLSearchParams({customerId: 1})}`)
         .then((response) => response.json())
         .then((data) => {
           console.log(data)
+          // Loop through the array of object and return a string of html
+          for (const item of data.orders) {
+            orderHistoryItemCard(item)
+          }
+          orderHistoryContainer.insertAdjacentHTML('beforeend', ` <div class="overlay"></div>`)
         })
     } catch(error) {
       console.log(error)
     }
+  }
+
+  // Map through an array of object and return a string of html
+  const orderHistoryItemCard = (item) => {
+    const date = convertDate(item.createdAt) 
+    const orderCard = `
+      <div class="msg">
+        <img class="msg-profile" src="https://www.rawshorts.com/freeicons/wp-content/uploads/2017/01/orange_travelpictdinner_1484336833.png" alt="" />
+        <div class="msg-detail">
+        <div class="msg-username">Order ${item.id}: (₦${item.totalPrice})</div>
+        <div class="msg-content">
+          <span class="msg-message">${date}</span>
+          <span class="msg-date">${item.status}</span>
+        </div>
+        </div>
+      </div>
+    `
+    orderHistoryContainer.insertAdjacentHTML('beforeend', orderCard)
+  } 
+  
+  // Convert 2023-03-17T12:33:08.172Z to 17/03/2023
+  const convertDate = (date) => {
+    let newDate = new Date(date)
+    let day = newDate.getDate()
+    let month = newDate.getMonth() + 1
+    let year = newDate.getFullYear()
+
+    return `${day}/${month}/${year}`
   }
   
   getOrders()

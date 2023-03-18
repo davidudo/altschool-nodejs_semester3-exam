@@ -117,6 +117,10 @@ io.on('connection', (socket: Socket): void => {
   let orderHistoryMessage: string = ''
   let currentOrderMessage: string = ''
   let currentOrderInfo: string = ''
+  let currentOrderId: string = ''
+  let currentOrderStatus: string = ''
+  let currentOrderTotalPrice: number = 0
+
   let orderHistory: any = []
   let currentOrder: any = {}
   let menuList: MenuItemModel[] = []
@@ -125,7 +129,6 @@ io.on('connection', (socket: Socket): void => {
   let previousOrders: string[] = []
 
   let customerId: number = 0
-  const orderId: number = 0
 
   socket.on('id-customer', (customerId) => {
     if (customerId == null ?? customerId === undefined) {
@@ -196,7 +199,11 @@ io.on('connection', (socket: Socket): void => {
           currentOrderMessage = 'You have made no order'
         }
 
-        currentOrderInfo = `Order Id: ${currentOrder.id} - ${currentOrder.status} - ₦${currentOrder.totalPrice}`
+        currentOrderId = currentOrder.id
+        currentOrderStatus = currentOrder.status
+        currentOrderTotalPrice = currentOrder.totalPrice
+
+        currentOrderInfo = `Order Id: ${currentOrderId} - ${currentOrderStatus} - ₦${currentOrderTotalPrice}`
 
         currentOrderMessage = `
           Here is your current order information:

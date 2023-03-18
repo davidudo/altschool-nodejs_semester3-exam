@@ -108,6 +108,9 @@ io.on('connection', (socket) => {
     let orderHistoryMessage = '';
     let currentOrderMessage = '';
     let currentOrderInfo = '';
+    let currentOrderId = '';
+    let currentOrderStatus = '';
+    let currentOrderTotalPrice = 0;
     let orderHistory = [];
     let currentOrder = {};
     let menuList = [];
@@ -115,7 +118,6 @@ io.on('connection', (socket) => {
     let orderToCancel = {};
     let previousOrders = [];
     let customerId = 0;
-    const orderId = 0;
     socket.on('id-customer', (customerId) => {
         var _a;
         if ((_a = customerId == null) !== null && _a !== void 0 ? _a : customerId === undefined) {
@@ -167,7 +169,10 @@ io.on('connection', (socket) => {
                 if (currentOrder == null) {
                     currentOrderMessage = 'You have made no order';
                 }
-                currentOrderInfo = `Order Id: ${currentOrder.id} - ${currentOrder.status} - ₦${currentOrder.totalPrice}`;
+                currentOrderId = currentOrder.id;
+                currentOrderStatus = currentOrder.status;
+                currentOrderTotalPrice = currentOrder.totalPrice;
+                currentOrderInfo = `Order Id: ${currentOrderId} - ${currentOrderStatus} - ₦${currentOrderTotalPrice}`;
                 currentOrderMessage = `
           Here is your current order information:
           <br>
