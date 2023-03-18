@@ -6,6 +6,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import http from 'http'
 import dotenv from 'dotenv'
+import color from 'colors'
 
 import customerRouter from './src/routes/customer.route'
 import staffRouter from './src/routes/staff.route'
@@ -256,5 +257,7 @@ io.on('connection', (socket: Socket): void => {
 })
 
 server.listen(PORT, HOST, () => {
-  console.log(`Server is running at http://${HOST}:${PORT}`)
+  console.log(`Server is running at http://${HOST}:${PORT}`.yellow.bold)
 })
+
+modules.export = app

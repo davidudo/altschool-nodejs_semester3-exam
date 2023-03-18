@@ -21,9 +21,11 @@
   "author": "David Udo",
   "license": "ISC",
   "dependencies": {
+    "@types/colors": "^1.2.1",
     "@types/express-session": "^1.17.6",
     "@types/socket.io": "^3.0.2",
     "@types/stripe": "^8.0.417",
+    "colors": "^1.4.0",
     "concurrently": "^7.6.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
