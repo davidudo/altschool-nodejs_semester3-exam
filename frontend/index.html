@@ -91,7 +91,8 @@
 <script>
   // TODO: Clear customerId default
 
-  const socket = io('https://altschool-quickorder.onrender.com')
+  // const socket = io('https://altschool-quickorder.onrender.com')
+  const socket = io('ws://localhost:8000')
 
   let chatAreaMain = document.querySelector('.chat-area-main')
   const chatInput = document.querySelector('#chat-input')
@@ -171,6 +172,8 @@
 
       chatInput.value = ''
     } else {
+      let quantity = 1
+      
       let orderData = {
         customer: {
           id: localStorage.getItem('customerId'),
@@ -181,27 +184,35 @@
           orderItems: [
             {
               menuItem: {
-                "id": 1,
-                "price": 2000
+                id: 1,
+                price: 2000
               },
-              notes: "Extra spicy"
+              notes: "Extra spicy",
+              quantity
             },
             {
               menuItem: {
-                id: 2
+                id: 2,
+                price: 4000
               },
-              notes: "Extra spicy"
+              notes: "Extra spicy",
+              quantity
             }
           ],
-          totalPrice: 1000
+          totalPrice: 0
         },
         customerFeedback: {
           id: 1,
-          feedback: "Good"
+          comment: "Good"
         }
       }
 
-      // Reduce 
+      // Reduce orderData.order.orderItems.menuItem.price to a single value
+      let totalPrice = orderData.order.orderItems.reduce((total, item) => {
+        return total + item.menuItem.price
+      }, 0)
+
+      orderData.order.totalPrice = totalPrice
 
       let optionData = {
         option: Number(chatInputValue),
@@ -238,6 +249,14 @@
 
   socket.on('place-order', (data) => {
     console.log(data)
+    chatMessage = data
+    imgSrc = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png'
+    ownerClass = ''
+    
+    addMessage(chatMessage, ownerClass, imgSrc)
+  })
+
+  socket.on('order-status', (data) => {
     chatMessage = data
     imgSrc = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png'
     ownerClass = ''

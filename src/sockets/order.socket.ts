@@ -6,14 +6,13 @@ import { CustomerFeedbackModel, type CustomerFBAttributes } from '../models/cust
 import { StaffModel } from '../models/staff.model'
 
 async function orderSocket (socket: Socket, data: any): Promise<void> {
-  const receivedData = data
-  console.log(`Message received from ${socket.id}: ${receivedData}`)
+  console.log(`Message received from ${socket.id}: ${data}`)
 
   const {
     customer,
     order,
     customerFeedback
-  } = receivedData
+  } = data.orderData
 
   // Check if customer exists and create customer if not found
   const customerId: number = Number(customer.id)
@@ -87,7 +86,8 @@ async function orderSocket (socket: Socket, data: any): Promise<void> {
   }
 
   // TODO: Broadcast message to admin
-  socket.broadcast.emit('order-status', { orderData })
+  // socket.emit('order-status', orderData)
+  socket.emit('order-status', 'You have checkedout your order sucessfully')
 }
 
 export default orderSocket

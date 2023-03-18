@@ -16,9 +16,8 @@ const customer_feedback_model_1 = require("../models/customer_feedback.model");
 const staff_model_1 = require("../models/staff.model");
 function orderSocket(socket, data) {
     return __awaiter(this, void 0, void 0, function* () {
-        const receivedData = data;
-        console.log(`Message received from ${socket.id}: ${receivedData}`);
-        const { customer, order, customerFeedback } = receivedData;
+        console.log(`Message received from ${socket.id}: ${data}`);
+        const { customer, order, customerFeedback } = data.orderData;
         // Check if customer exists and create customer if not found
         const customerId = Number(customer.id);
         const customerData = yield customer_model_1.CustomerModel.findByPk(customerId);
@@ -71,7 +70,8 @@ function orderSocket(socket, data) {
             yield order_item_model_1.OrderItemModel.create(orderItemData);
         }
         // TODO: Broadcast message to admin
-        socket.broadcast.emit('order-status', { orderData });
+        // socket.emit('order-status', orderData)
+        socket.emit('order-status', 'You have checkedout your order sucessfully');
     });
 }
 exports.default = orderSocket;

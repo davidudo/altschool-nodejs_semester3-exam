@@ -144,7 +144,6 @@ io.on('connection', (socket) => {
                 }
                 orderToCancel.status = 'canceled';
                 yield orderToCancel.save();
-                console.log(orderToCancel);
                 socket.emit('cancel-order', 'Your order has been cancelled');
                 break;
             case 1:

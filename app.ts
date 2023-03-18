@@ -164,9 +164,6 @@ io.on('connection', (socket: Socket): void => {
         orderToCancel.status = 'canceled'
 
         await orderToCancel.save()
-
-        console.log(orderToCancel)
-
         socket.emit('cancel-order', 'Your order has been cancelled')
         break
 
