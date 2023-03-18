@@ -21,6 +21,7 @@ const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
 const http_1 = __importDefault(require("http"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const colors_1 = __importDefault(require("colors"));
 const customer_route_1 = __importDefault(require("./src/routes/customer.route"));
 const staff_route_1 = __importDefault(require("./src/routes/staff.route"));
 const order_route_1 = __importDefault(require("./src/routes/order.route"));
@@ -104,11 +105,15 @@ io.on('connection', (socket) => {
       Select 0 to cancel order<br>
     `;
     let menuMessage = '';
+    let orderHistoryMessage = '';
+    let currentOrderMessage = '';
+    let currentOrderInfo = '';
     let orderHistory = [];
     let currentOrder = {};
     let menuList = [];
     let menuItems = [];
     let orderToCancel = {};
+    let previousOrders = [];
     let customerId = 0;
     let orderId = 0;
     socket.on('id-customer', (customerId) => {
@@ -127,9 +132,9 @@ io.on('connection', (socket) => {
     socket.on('select-options', (data) => __awaiter(void 0, void 0, void 0, function* () {
         switch (data.option) {
             case 0:
-                orderId = data.orderId;
+                customerId = data.customerId;
                 orderToCancel = yield order_model_1.OrderModel.findOne({
-                    where: { id: orderId },
+                    where: { customerId },
                     order: [['createdAt', 'DESC']]
                 });
                 if (orderToCancel == null) {
@@ -138,13 +143,14 @@ io.on('connection', (socket) => {
                 }
                 orderToCancel.status = 'canceled';
                 yield orderToCancel.save();
+                console.log(orderToCancel);
                 socket.emit('cancel-order', 'Your order has been cancelled');
                 break;
             case 1:
                 menuList = yield menu_item_model_1.MenuItemModel.findAll({
                     where: { deletedAt: null }
                 });
-                menuItems = menuList.map((item) => `${item.id} - ${item.name} - ${item.price}`);
+                menuItems = menuList.map((item) => `${item.id} - ${item.name} - ₦${item.price}`);
                 menuMessage = `
           These are the available menu items<br>
           Please select the items you would like to order<br>
@@ -154,27 +160,22 @@ io.on('connection', (socket) => {
                 socket.emit('place-order', menuMessage);
                 break;
             case 97:
+                customerId = data.customerId;
                 currentOrder = yield order_model_1.OrderModel.findOne({
                     where: { customerId },
-                    include: [
-                        {
-                            model: order_item_model_1.OrderItemModel,
-                            as: 'orderItems',
-                            include: [
-                                {
-                                    model: menu_item_model_1.MenuItemModel,
-                                    as: 'menuItem',
-                                    attributes: ['id', 'name', 'price']
-                                }
-                            ]
-                        }
-                    ],
                     order: [['createdAt', 'DESC']]
                 });
                 if (currentOrder == null) {
-                    currentOrder = 'You have made no order';
+                    currentOrderMessage = 'You have made no order';
                 }
-                socket.emit('current-order', currentOrder);
+                currentOrderInfo = `Order Id: ${currentOrder.id} - ${currentOrder.status} - ₦${currentOrder.totalPrice}`;
+                currentOrderMessage = `
+          Here is your current order information:
+          <br>
+          <br>
+          ${currentOrderInfo}
+        `;
+                socket.emit('current-order', currentOrderMessage);
                 break;
             case 98:
                 customerId = data.customerId;
@@ -197,9 +198,16 @@ io.on('connection', (socket) => {
                         order: [['createdAt', 'DESC']]
                     });
                     if (orderHistory.length === 0) {
-                        orderHistory = 'You have made no order';
+                        orderHistoryMessage = 'You have made no order';
                     }
-                    socket.emit('order-history', orderHistory);
+                    previousOrders = orderHistory.map((item) => `Order Id: ${item.id} - ${item.status} - ₦${item.totalPrice}`);
+                    orderHistoryMessage = `
+            Here is your order history:
+            <br>
+            <br>
+            ${previousOrders.join('<br>')}
+          `;
+                    socket.emit('order-history', orderHistoryMessage);
                 }
                 catch (error) {
                     console.error('Error fetching order history:', error);
@@ -221,6 +229,6 @@ io.on('connection', (socket) => {
     });
 });
 server.listen(PORT, HOST, () => {
-    console.log(`Server is running at http://${HOST}:${PORT}`.yellow.bold);
+    console.log(colors_1.default.yellow.bold(`Server is running at http://${HOST}:${PORT}`));
 });
-modules.export = app;
+module.exports = app;

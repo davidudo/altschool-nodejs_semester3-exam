@@ -91,7 +91,7 @@ html {
   flex-direction: column;
   background-color: var(--theme-bg-color);
   max-width: 1600px;
-  height: 100vh;
+  height: 92vh;
   margin: 0 auto;
   overflow: hidden;
 }
@@ -659,7 +659,7 @@ html {
     display: none;
   }
 }
-@media (max-width: 780px) {
+@media (max-width: 900px) {
   .conversation-area {
     display: none;
   }

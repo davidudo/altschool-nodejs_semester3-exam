@@ -1,4 +1,4 @@
-/*import colors from 'colors'
+/* import colors from 'colors'
 import { OrderModel } from '../models/order.model'
 import { OrderItemModel } from '../models/order_item.model'
 import { MenuItemModel } from '../models/menu_item.model'
@@ -9,7 +9,7 @@ import { PaymentModel } from '../models/payment.model'
 
 sequelize.sync({ force: true }).then(async () => {
   console.log('Database seeding begins...'.yellow.bold)
-  
+
   // Create sample menu items
   const menuItems = await MenuItemModel.bulkCreate([
     { name: 'Cheeseburger', price: 8.99 },

@@ -8,10 +8,11 @@ import { StaffModel } from '../models/staff.model'
 
 async function getAllOrders (req: Request, res: Response, next: NextFunction): Promise<any> {
   try {
-    const { customerId } = req.body
-    const whereObject: any = { deletedAt: null }
+    const whereObject: any = {}
+    const { customerId } = req.query
+    whereObject.deletedAt = null
 
-    if (customerId != null) {
+    if (customerId != null ?? customerId != undefined) {
       whereObject.customerId = customerId
     }
 
@@ -169,7 +170,7 @@ async function addOrder (req: Request, res: Response, next: NextFunction): Promi
 async function updateOrder (req: Request, res: Response, next: NextFunction): Promise<any> {
   try {
     const orderId: number = Number(req.params.id)
-    const { status } = req.body
+    const { status, customerId } = req.body
 
     const order = await OrderModel.findOne({ where: { id: orderId, deletedAt: null } })
 
@@ -178,6 +179,7 @@ async function updateOrder (req: Request, res: Response, next: NextFunction): Pr
     }
 
     order.status = status ?? order.status
+    order.customerId = customerId ?? order.customerId
 
     await order.save()
 

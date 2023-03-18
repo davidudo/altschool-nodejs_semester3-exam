@@ -6,7 +6,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import http from 'http'
 import dotenv from 'dotenv'
-import color from 'colors'
+import colors from 'colors'
 
 import customerRouter from './src/routes/customer.route'
 import staffRouter from './src/routes/staff.route'
@@ -114,11 +114,15 @@ io.on('connection', (socket: Socket): void => {
     `
 
   let menuMessage: string = ''
+  let orderHistoryMessage: string = ''
+  let currentOrderMessage: string = ''
+  let currentOrderInfo: string = ''
   let orderHistory: any = []
   let currentOrder: any = {}
   let menuList: MenuItemModel[] = []
   let menuItems: string[] = []
   let orderToCancel: any = {}
+  let previousOrders: string[] = []
 
   let customerId: number = 0
   let orderId: number = 0
@@ -143,13 +147,13 @@ io.on('connection', (socket: Socket): void => {
   socket.on('select-options', async (data) => {
     switch (data.option) {
       case 0:
-        orderId = data.orderId
+        customerId = data.customerId
 
         orderToCancel = await OrderModel.findOne({
-          where: { id: orderId },
+          where: { customerId },
           order: [['createdAt', 'DESC']]
         })
-
+        
         if (orderToCancel == null) {
           socket.emit('cancel-order', 'Order not found')
           break
@@ -158,6 +162,8 @@ io.on('connection', (socket: Socket): void => {
         orderToCancel.status = 'canceled'
 
         await orderToCancel.save()
+        
+        console.log(orderToCancel)
 
         socket.emit('cancel-order', 'Your order has been cancelled')
         break
@@ -167,7 +173,7 @@ io.on('connection', (socket: Socket): void => {
           where: { deletedAt: null }
         })
 
-        menuItems = menuList.map((item) => `${item.id} - ${item.name} - ${item.price}`)
+        menuItems = menuList.map((item) => `${item.id} - ${item.name} - ₦${item.price}`)
 
         menuMessage = `
           These are the available menu items<br>
@@ -180,29 +186,27 @@ io.on('connection', (socket: Socket): void => {
         break
 
       case 97:
+        customerId = data.customerId
+
         currentOrder = await OrderModel.findOne({
           where: { customerId },
-          include: [
-            {
-              model: OrderItemModel,
-              as: 'orderItems',
-              include: [
-                {
-                  model: MenuItemModel,
-                  as: 'menuItem',
-                  attributes: ['id', 'name', 'price']
-                }
-              ]
-            }
-          ],
           order: [['createdAt', 'DESC']]
         })
 
         if (currentOrder == null) {
-          currentOrder = 'You have made no order'
+          currentOrderMessage = 'You have made no order'
         }
+        
+       currentOrderInfo = `Order Id: ${currentOrder.id} - ${currentOrder.status} - ₦${currentOrder.totalPrice}`
 
-        socket.emit('current-order', currentOrder)
+        currentOrderMessage = `
+          Here is your current order information:
+          <br>
+          <br>
+          ${currentOrderInfo}
+        `
+
+        socket.emit('current-order', currentOrderMessage)
         break
 
       case 98:
@@ -228,10 +232,20 @@ io.on('connection', (socket: Socket): void => {
           })
 
           if (orderHistory.length === 0) {
-            orderHistory = 'You have made no order'
+            orderHistoryMessage = 'You have made no order'
           }
+          
+          previousOrders = orderHistory.map((item: any
+          ) => `Order Id: ${item.id} - ${item.status} - ₦${item.totalPrice}`)
+          
+          orderHistoryMessage = `
+            Here is your order history:
+            <br>
+            <br>
+            ${previousOrders.join('<br>')}
+          `
 
-          socket.emit('order-history', orderHistory)
+          socket.emit('order-history', orderHistoryMessage)
         } catch (error) {
           console.error('Error fetching order history:', error)
           throw error
@@ -257,7 +271,7 @@ io.on('connection', (socket: Socket): void => {
 })
 
 server.listen(PORT, HOST, () => {
-  console.log(`Server is running at http://${HOST}:${PORT}`.yellow.bold)
+  console.log(colors.yellow.bold(`Server is running at http://${HOST}:${PORT}`))
 })
 
-modules.export = app
+module.exports = app

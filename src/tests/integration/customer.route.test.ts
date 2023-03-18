@@ -1,4 +1,4 @@
-/*import app from '../../app'
+/* import app from '../../app'
 import request from 'supertest'
 import { expect } from 'chai'
 import { connection } from '../src/db.config'
@@ -9,7 +9,7 @@ describe('CRUD operations for CustomerModel', () => {
     // Connect to the database before running the tests
     await connection.sync({ force: true })
   });
-  
+
   afterEach(async () => {
     await connection.truncate()
   })
@@ -22,15 +22,15 @@ describe('CRUD operations for CustomerModel', () => {
   describe('POST /customer', () => {
     it('should create a new customer', async () => {
       const Customer = { name: 'John Doe', email: 'johndoe@example.com' }
-      
+
       const res = await request(app).post('/customer').send(Customer)
-      
+
       expect(res.status).to.equal(201)
       expect(res.body.name).to.equal(Customer.name)
       expect(res.body.email).to.equal(Customer.email)
     });
   });
-  
+
   describe("GET /customer", () => {
     it("should get all Customers", async () => {
       await CustomerModel.bulkCreate([

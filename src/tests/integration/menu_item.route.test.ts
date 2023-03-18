@@ -1,4 +1,4 @@
-/*import app from '../../app'
+/* import app from '../../app'
 import request from 'supertest'
 import { expect } from 'chai'
 import { connection } from '../src/db.config'
@@ -9,7 +9,7 @@ describe('CRUD operations for MenuItemModel', () => {
     // Connect to the database before running the tests
     await connection.sync({ force: true })
   });
-  
+
   afterEach(async () => {
     await connection.truncate()
   })
@@ -22,15 +22,15 @@ describe('CRUD operations for MenuItemModel', () => {
   describe('POST /menu_tem', () => {
     it('should create a new menu_tem', async () => {
       const MenuItem = { name: 'John Doe', email: 'johndoe@example.com' }
-      
+
       const res = await request(app).post('/menu_tem').send(MenuItem)
-      
+
       expect(res.status).to.equal(201)
       expect(res.body.name).to.equal(MenuItem.name)
       expect(res.body.email).to.equal(MenuItem.email)
     });
   });
-  
+
   describe("GET /menu_tem", () => {
     it("should get all MenuItems", async () => {
       await MenuItemModel.bulkCreate([

@@ -16,11 +16,13 @@ const menu_item_model_1 = require("../models/menu_item.model");
 const customer_feedback_model_1 = require("../models/customer_feedback.model");
 const staff_model_1 = require("../models/staff.model");
 function getAllOrders(req, res, next) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const { customerId } = req.body;
-            const whereObject = { deletedAt: null };
-            if (customerId != null) {
+            const whereObject = {};
+            const { customerId } = req.query;
+            whereObject.deletedAt = null;
+            if ((_a = customerId != null) !== null && _a !== void 0 ? _a : customerId != undefined) {
                 whereObject.customerId = customerId;
             }
             const orders = yield order_model_1.OrderModel.findAll({
@@ -154,12 +156,13 @@ function updateOrder(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const orderId = Number(req.params.id);
-            const { status } = req.body;
+            const { status, customerId } = req.body;
             const order = yield order_model_1.OrderModel.findOne({ where: { id: orderId, deletedAt: null } });
             if (order == null) {
                 return res.status(404).send(`Customer with id ${orderId} not found`);
             }
             order.status = status !== null && status !== void 0 ? status : order.status;
+            order.customerId = customerId !== null && customerId !== void 0 ? customerId : order.customerId;
             yield order.save();
             return res.status(200).json({
                 status: true,

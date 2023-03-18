@@ -1,4 +1,4 @@
-/*import app from '../../app'
+/* import app from '../../app'
 import request from 'supertest'
 import { expect } from 'chai'
 import { connection } from '../src/db.config'
@@ -9,7 +9,7 @@ describe('CRUD operations for PaymentModel', () => {
     // Connect to the database before running the tests
     await connection.sync({ force: true })
   });
-  
+
   afterEach(async () => {
     await connection.truncate()
   })
@@ -22,15 +22,15 @@ describe('CRUD operations for PaymentModel', () => {
   describe('POST /payment', () => {
     it('should create a new payment', async () => {
       const Payment = { name: 'John Doe', email: 'johndoe@example.com' }
-      
+
       const res = await request(app).post('/payment').send(Payment)
-      
+
       expect(res.status).to.equal(201)
       expect(res.body.name).to.equal(Payment.name)
       expect(res.body.email).to.equal(Payment.email)
     });
   });
-  
+
   describe("GET /payment", () => {
     it("should get all Payments", async () => {
       await PaymentModel.bulkCreate([
