@@ -4,7 +4,7 @@
   "description": "Restaurant Order Chatbot",
   "main": "app.js",
   "scripts": {
-    "build": "npx tsc",
+    "build": "npm install && npx tsc",
     "start": "node dist/app.js",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/app.js\"",
     "test": "echo \"Error: no test specified\" && exit 1",
