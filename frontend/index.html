@@ -133,7 +133,6 @@
     <div class="chat-area-title">QuickOrder Bot</div>
     <div class="chat-area-group">
      <img class="chat-area-profile" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png" alt="" />
-     <span>+4</span>
     </div>
    </div>
    <div class="chat-area-main">
@@ -200,6 +199,11 @@
   let chatMessage = ''
   let chatMsg = ''
   let ownerClass = ''
+  let customerIsKnown = false
+
+  if (customerId === null || customerId === undefined) {
+    customerIsKnown = false
+  }
   
   let currentDate = new Date()
   let dateOptions = {weekday: 'short', month: 'short', day: 'numeric'}
@@ -208,7 +212,7 @@
   let readableDate = currentDate.toLocaleDateString('en-US', dateOptions)
   let readableTime = currentDate.toLocaleTimeString('en-US', timeOptions)
 
-  if (customerId === null || customerId === undefined) {
+  if (customerIsKnown === false) {
     socket.emit('id-customer', customerId)
   } else {
     socket.on('connected', (data) => {
@@ -218,8 +222,6 @@
       addMessage(chatMessage, ownerClass, imgSrc)
     })
   }
-
-  console.log('customerId', customerId)
 
   socket.on('id-customer', (data) => {
     console.log(data)
@@ -234,10 +236,12 @@
     console.log(data)
     localStorage.setItem('customerId', data.id)
     localStorage.setItem('customerName', data.name)
+    customerIsKnown = true
 
     socket.on('connected', (data) => {
       console.log(data)
       chatMessage = data
+      ownerClass = ''
 
       addMessage(chatMessage, ownerClass, imgSrc)
     })
@@ -251,11 +255,13 @@
       return
     }
 
-    if (customerId === null || customerId === undefined) {
+    console.log(customerIsKnown)
+
+    if (customerIsKnown == false) {
       socket.emit('create-customer', chatInputValue)
       
       chatMessage = chatInputValue
-      imgSrc = 'https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-512.png'
+      imgSrc = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png'
       ownerClass = 'owner'
 
       addMessage(chatMessage, ownerClass, imgSrc)

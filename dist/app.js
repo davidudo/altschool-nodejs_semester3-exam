@@ -115,7 +115,7 @@ io.on('connection', (socket) => {
     let orderToCancel = {};
     let previousOrders = [];
     let customerId = 0;
-    let orderId = 0;
+    const orderId = 0;
     socket.on('id-customer', (customerId) => {
         var _a;
         if ((_a = customerId == null) !== null && _a !== void 0 ? _a : customerId === undefined) {
@@ -124,7 +124,6 @@ io.on('connection', (socket) => {
                 const customer = yield customer_model_1.CustomerModel.create({ name });
                 console.log(customer.id);
                 socket.emit('store-customer', customer);
-                socket.emit('connected', welcomeMessage);
             }));
         }
     });

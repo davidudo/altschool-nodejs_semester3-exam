@@ -125,7 +125,7 @@ io.on('connection', (socket: Socket): void => {
   let previousOrders: string[] = []
 
   let customerId: number = 0
-  let orderId: number = 0
+  const orderId: number = 0
 
   socket.on('id-customer', (customerId) => {
     if (customerId == null ?? customerId === undefined) {
@@ -137,7 +137,6 @@ io.on('connection', (socket: Socket): void => {
         console.log(customer.id)
 
         socket.emit('store-customer', customer)
-        socket.emit('connected', welcomeMessage)
       })
     }
   })
@@ -153,7 +152,7 @@ io.on('connection', (socket: Socket): void => {
           where: { customerId },
           order: [['createdAt', 'DESC']]
         })
-        
+
         if (orderToCancel == null) {
           socket.emit('cancel-order', 'Order not found')
           break
@@ -162,7 +161,7 @@ io.on('connection', (socket: Socket): void => {
         orderToCancel.status = 'canceled'
 
         await orderToCancel.save()
-        
+
         console.log(orderToCancel)
 
         socket.emit('cancel-order', 'Your order has been cancelled')
@@ -196,8 +195,8 @@ io.on('connection', (socket: Socket): void => {
         if (currentOrder == null) {
           currentOrderMessage = 'You have made no order'
         }
-        
-       currentOrderInfo = `Order Id: ${currentOrder.id} - ${currentOrder.status} - ₦${currentOrder.totalPrice}`
+
+        currentOrderInfo = `Order Id: ${currentOrder.id} - ${currentOrder.status} - ₦${currentOrder.totalPrice}`
 
         currentOrderMessage = `
           Here is your current order information:
@@ -234,10 +233,10 @@ io.on('connection', (socket: Socket): void => {
           if (orderHistory.length === 0) {
             orderHistoryMessage = 'You have made no order'
           }
-          
+
           previousOrders = orderHistory.map((item: any
           ) => `Order Id: ${item.id} - ${item.status} - ₦${item.totalPrice}`)
-          
+
           orderHistoryMessage = `
             Here is your order history:
             <br>
