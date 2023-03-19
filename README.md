@@ -1,7 +1,7 @@
 ![Altschool Logo](https://raw.githubusercontent.com/Oluwasetemi/altschool-opensource-names/d5d87d27629fdd83b4a1d601afee0248f69cb25e/AltSchool-dark.svg)
 
 # Altschool QuickOrder ChatBot
----
+
 ![screenshot](frontend/images/screenshot.png)
 
 This is a chatbot application built to assist customers in placing orders for their preferred meals in a restaurant.
@@ -9,11 +9,11 @@ This is a chatbot application built to assist customers in placing orders for th
 The chatbot interface is designed to look and function like a chat interface. The application doesn't require authentication, but user sessions will be stored based on their devices.
 
 ## Base URL
----
+
 - [https://altschool-quickorder.onrender.com](https://altschool-quickorder.onrender.com)
 
 ## Socket Features
----
+
 1. A user can select different options from the chatbot interface
 2. When a customer lands on the chatbot page, the bot should send these options to the customer:
    - Select 1 to Place an order
@@ -29,7 +29,7 @@ The chatbot interface is designed to look and function like a chat interface. Th
 7. When a customer selects `0`, the bot should cancel the order if there is any.
 
 ## Installation
----
+
 1. Clone the repository to your local machine
    ```
    git clone https://github.com/davidudo/altschool-nodejs_semester3-exam
@@ -66,7 +66,7 @@ The chatbot interface is designed to look and function like a chat interface. Th
    ```
 
 ## Tech Stack
----
+
 The application was built using the following technologies:
 
 - Node.js
@@ -78,16 +78,16 @@ The application was built using the following technologies:
 - ESLint (for TypeScript)
 
 ## Hosting
+
 - Frontend ==> Vercel
 - Backend ==> Render
 - Database ==> Neon.tech
 
 ## Database Design
----
+
 ![screenshot](frontend/images/db_design.png)
 
 ## Models
----
 
 ### Customer
 |  field     |  data_type |  constraints  |
@@ -151,7 +151,6 @@ The application was built using the following technologies:
 |  paymentGateway     |  number  |  required    |
 
 ## APIs
----
 
 ### Get All Orders
 
@@ -260,5 +259,5 @@ The application was built using the following technologies:
 - Method: DELETE
 
 ## Contributor
----
+
 - David Udo
