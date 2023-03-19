@@ -10,7 +10,7 @@ The chatbot interface is designed to look and function like a chat interface. Th
 
 ## Base URL
 
-- Frontend: [https://altschool-quickorder.vercel.app](https://altschool-quickorder.vercel.app)
+- Frontend: [https://altschool-nodejs-semester3-exam.vercel.app](https://altschool-nodejs-semester3-exam.vercel.app)
 - Backend: [https://altschool-quickorder.onrender.com](https://altschool-quickorder.onrender.com)
 
 ## Socket Features
