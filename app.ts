@@ -27,7 +27,6 @@ dotenv.config()
 const PORT: number = parseInt(process.env.PORT ?? '8000')
 const HOST: string = process.env.HOST ?? 'localhost'
 process.env.PWD = process.cwd()
-const PWD = process.env.PWD
 
 const app: Express = express()
 
@@ -41,11 +40,9 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(morgan('tiny'))
 
-app.use(express.static(`${process.env.PWD}/src/public`))
-
 // Routes
 app.get('/', (req: Request, res: Response) => {
-  res.sendFile(`${PWD}/src/public/index.html`)
+  res.send('App is running...')
 })
 
 app.use('/api/v1/customer', customerRouter)
@@ -135,8 +132,6 @@ io.on('connection', (socket: Socket): void => {
 
       socket.on('create-customer', async (name) => {
         const customer = await CustomerModel.create({ name })
-
-        console.log(customer.id)
 
         socket.emit('store-customer', customer)
         socket.emit('connected', welcomeMessage)
@@ -243,7 +238,7 @@ io.on('connection', (socket: Socket): void => {
           }
 
           previousOrders = orderHistory.map((item: any
-          ) => `Order Id: ${item.id} - ${item.status} - ₦${item.totalPrice}`)
+          ) => (`Order Id: ${item.id} - ${item.status} - ₦${item.totalPrice}`))
 
           orderHistoryMessage = `
             Here is your order history:
@@ -286,4 +281,4 @@ server.listen(PORT, HOST, () => {
   console.log(colors.yellow.bold(`Server is running at http://${HOST}:${PORT}`))
 })
 
-module.exports = app
+export { app }

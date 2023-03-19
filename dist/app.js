@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var _a, _b;
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.app = void 0;
 const express_1 = __importDefault(require("express"));
 const socket_io_1 = require("socket.io");
 const express_session_1 = __importDefault(require("express-session"));
@@ -38,8 +39,8 @@ dotenv_1.default.config();
 const PORT = parseInt((_a = process.env.PORT) !== null && _a !== void 0 ? _a : '8000');
 const HOST = (_b = process.env.HOST) !== null && _b !== void 0 ? _b : 'localhost';
 process.env.PWD = process.cwd();
-const PWD = process.env.PWD;
 const app = (0, express_1.default)();
+exports.app = app;
 const corsOptions = { origin: '*' };
 app.use((0, cors_1.default)(corsOptions));
 app.use((0, helmet_1.default)());
@@ -47,10 +48,9 @@ app.disable('x-powered-by');
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use(express_1.default.json());
 app.use((0, morgan_1.default)('tiny'));
-app.use(express_1.default.static(`${process.env.PWD}/src/public`));
 // Routes
 app.get('/', (req, res) => {
-    res.sendFile(`${PWD}/src/public/index.html`);
+    res.send('App is running...');
 });
 app.use('/api/v1/customer', customer_route_1.default);
 app.use('/api/v1/staff', staff_route_1.default);
@@ -124,7 +124,6 @@ io.on('connection', (socket) => {
             socket.emit('id-customer', 'What is your name?');
             socket.on('create-customer', (name) => __awaiter(void 0, void 0, void 0, function* () {
                 const customer = yield customer_model_1.CustomerModel.create({ name });
-                console.log(customer.id);
                 socket.emit('store-customer', customer);
                 socket.emit('connected', welcomeMessage);
             }));
@@ -206,8 +205,9 @@ io.on('connection', (socket) => {
                     });
                     if (orderHistory.length === 0) {
                         orderHistoryMessage = 'You have made no order';
+                        break;
                     }
-                    previousOrders = orderHistory.map((item) => `Order Id: ${item.id} - ${item.status} - ₦${item.totalPrice}`);
+                    previousOrders = orderHistory.map((item) => (`Order Id: ${item.id} - ${item.status} - ₦${item.totalPrice}`));
                     orderHistoryMessage = `
             Here is your order history:
             <br>
@@ -242,4 +242,3 @@ io.on('connection', (socket) => {
 server.listen(PORT, HOST, () => {
     console.log(colors_1.default.yellow.bold(`Server is running at http://${HOST}:${PORT}`));
 });
-module.exports = app;

@@ -91,7 +91,7 @@ html {
   flex-direction: column;
   background-color: var(--theme-bg-color);
   max-width: 1600px;
-  height: 92vh;
+  height: 98vh;
   margin: 0 auto;
   overflow: hidden;
 }
