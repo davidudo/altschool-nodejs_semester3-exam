@@ -1,33 +1,21 @@
-/* import colors from 'colors'
-import { OrderModel } from '../models/order.model'
-import { OrderItemModel } from '../models/order_item.model'
+import colors from 'colors'
+import { connection } from '../configs/db.config'
 import { MenuItemModel } from '../models/menu_item.model'
 import { CustomerModel } from '../models/customer.model'
-import { CustomerFeedbackModel } from '../models/customer_feedback.model'
 import { StaffModel } from '../models/staff.model'
-import { PaymentModel } from '../models/payment.model'
+import { customerDatas, menuItemDatas, staffDatas } from './data.seed'
 
-sequelize.sync({ force: true }).then(async () => {
+void connection.sync({ force: true }).then(async () => {
   console.log('Database seeding begins...'.yellow.bold)
 
   // Create sample menu items
-  const menuItems = await MenuItemModel.bulkCreate([
-    { name: 'Cheeseburger', price: 8.99 },
-    { name: 'Chicken Tenders', price: 6.99 },
-    { name: 'French Fries', price: 2.99 },
-    { name: 'Onion Rings', price: 3.99 },
-  ]);
+  void MenuItemModel.bulkCreate(menuItemDatas)
 
-  // Create a sample order
-  const order = await OrderModel.create({ status: 'pending', totalPrice: 0 });
+  // Create sample customers
+  void CustomerModel.bulkCreate(customerDatas)
 
-  // Add order items to the order
-  await OrderItemModel.bulkCreate([
-    { orderId: order.id, menuItemId: menuItems[0].id, quantity: 2, price: menuItems[0].price },
-    { orderId: order.id, menuItemId: menuItems[1].id, quantity: 1, price: menuItems[1].price },
-    { orderId: order.id, menuItemId: menuItems[2].id, quantity: 1, price: menuItems[2].price },
-  ]);
+  // Create sample staffs
+  void StaffModel.bulkCreate(staffDatas)
 
-  console.log('Database seeding completed!'.green.bold);
-});
-*/
+  console.log(colors.green.bold('Database seeding completed!'))
+})

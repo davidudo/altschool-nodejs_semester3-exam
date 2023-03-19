@@ -1,25 +1,17 @@
-/* import colors from 'colors'
-import { OrderModel } from '../models/order.model'
-import { OrderItemModel } from '../models/order_item.model'
-import { MenuItemModel } from '../models/menu_item.model'
-import { CustomerModel } from '../models/customer.model'
-import { CustomerFeedbackModel } from '../models/customer_feedback.model'
-import { StaffModel } from '../models/staff.model'
-import { PaymentModel } from '../models/payment.model'
+import colors from 'colors'
+import { connection } from '../configs/db.config'
 
-console.log('Database ' + 'destruction'.underline.bold.red + ' begins...')
+console.log(`Database ${colors.underline.bold.red('destruction')} begins...`)
 
-// Destroy all data in the tables
-OrderItemModel.destroy({ truncate: true })
-MenuItemModel.destroy({ truncate: true })
-OrderModel.destroy({ truncate: true })
-CustomerModel.destroy({ truncate: true })
-CustomerFeedbackModel.destroy({ truncate: true })
-StaffModel.destroy({ truncate: true })
-PaymentModel.destroy({ truncate: true })
+function deleteAllData (): void {
+  try {
+    void connection.sync({ force: false })
 
-// Disconnect from the database
-sequelize.close()
+    // Destroy all data in the tables
+    void connection.query('TRUNCATE TABLE menu_item, order_item, staff, "order", customer, customer_feedback, payment CASCADE;')
+  } catch (error) {
+    console.error('Error deleting data:', error)
+  }
+}
 
-console.log('Database destruction complete'.green.bold)
-*/
+deleteAllData()

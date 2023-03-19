@@ -7,7 +7,7 @@ interface StaffAttributes {
   name: string
   email: string
   role: string
-  rating: '1' | '2' | '3' | '4' | '5'
+  rating: string
   deletedAt: Date | null
 }
 
@@ -19,7 +19,7 @@ class StaffModel extends Model<StaffAttributes, StaffCreationAttributes> impleme
   public name!: string
   public email!: string
   public role!: string
-  public rating!: '1' | '2' | '3' | '4' | '5'
+  public rating!: string
   public deletedAt!: Date | null
 
   public readonly createdAt!: Date
