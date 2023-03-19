@@ -156,8 +156,11 @@ io.on('connection', (socket) => {
           Please select the items you would like to order<br>
           <br>
           ${menuItems.join('<br>')}
+          <br>
+          <br>
+          100 - Exit selection mode
         `;
-                socket.emit('place-order', menuMessage);
+                socket.emit('place-order', { menuMessage, menuList });
                 break;
             case 97:
                 customerId = data.customerId;
@@ -218,6 +221,10 @@ io.on('connection', (socket) => {
                 }
                 break;
             case 99:
+                if (data.orderData.order.orderItems.length === 0) {
+                    socket.emit('order-status', 'You have not selected any item, select 1 to place an order');
+                    break;
+                }
                 void (0, order_socket_1.default)(socket, data);
                 break;
             default:

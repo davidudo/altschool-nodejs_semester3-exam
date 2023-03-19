@@ -179,9 +179,12 @@ io.on('connection', (socket: Socket): void => {
           Please select the items you would like to order<br>
           <br>
           ${menuItems.join('<br>')}
+          <br>
+          <br>
+          100 - Exit selection mode
         `
 
-        socket.emit('place-order', menuMessage)
+        socket.emit('place-order', { menuMessage, menuList })
         break
 
       case 97:
@@ -256,6 +259,11 @@ io.on('connection', (socket: Socket): void => {
         break
 
       case 99:
+        if (data.orderData.order.orderItems.length === 0) {
+          socket.emit('order-status', 'You have not selected any item, select 1 to place an order')
+          break
+        }
+
         void orderSocket(socket, data)
         break
 
