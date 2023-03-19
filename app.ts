@@ -239,6 +239,7 @@ io.on('connection', (socket: Socket): void => {
 
           if (orderHistory.length === 0) {
             orderHistoryMessage = 'You have made no order'
+            break
           }
 
           previousOrders = orderHistory.map((item: any

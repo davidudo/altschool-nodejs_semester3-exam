@@ -126,6 +126,7 @@ io.on('connection', (socket) => {
                 const customer = yield customer_model_1.CustomerModel.create({ name });
                 console.log(customer.id);
                 socket.emit('store-customer', customer);
+                socket.emit('connected', welcomeMessage);
             }));
         }
     });
