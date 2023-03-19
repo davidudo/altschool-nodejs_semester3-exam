@@ -152,8 +152,6 @@
 
 
   sendMessageBtn.addEventListener('click', () => {
-    console.log('menu-item-length', menuItemsToOrder)
-
     let chatInputValue = chatInput.value
 
     while (selectingItems === true) {
@@ -221,7 +219,6 @@
         
         // Increase the quantity of the item in the menuItemsToOrder array
         menuItemsToOrder[index].quantity += 1
-        console.log(menuItemsToOrder)
         
         chatMessage = `You have added ${menuItem.name} to your order`
         imgSrc = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png'
@@ -235,7 +232,6 @@
         orderItem.quantity = 1
 
         menuItemsToOrder.push(orderItem)
-        console.log(menuItemsToOrder)
         chatMessage = `You have added ${menuItem.name} to your order`
         imgSrc = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png'
         ownerClass = ''
@@ -384,16 +380,17 @@
       fetch(`${url}?${new URLSearchParams({customerId: localStorage.getItem('customerId')})}`)
         .then((response) => response.json())
         .then((data) => {
+          console.log(data)
           // check if the data is empty
-          if (data.orders.length === 0) {
-            orderHistoryContainer.insertAdjacentHTML('beforeend', ` <div class="msg">No order history...</div>`)
-          }
-
-          // Loop through the array of object and return a string of html
-          let index = data.orders.length
-          for (const item of data.orders) {
-            orderHistoryItemCard(item, index)
-            index--
+          if (data.message === 'No order found') {
+            orderHistoryContainer.insertAdjacentHTML('beforeend', ` <div class="msg"><p>No order history...</p></div>`)
+          } else {
+            // Loop through the array of object and return a string of html
+            let index = data.orders.length
+            for (const item of data.orders) {
+              orderHistoryItemCard(item, index)
+              index--
+            }
           }
           orderHistoryContainer.insertAdjacentHTML('beforeend', ` <div class="overlay"></div>`)
         })
@@ -430,7 +427,9 @@
     return `${day}/${month}/${year}`
   }
   
-  getOrders()
+  if (customerId) {
+    getOrders()
+  }
 </script>
 <script src="main.js"></script>
 </body>
