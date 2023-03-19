@@ -117,6 +117,13 @@
   let readableDate = currentDate.toLocaleDateString('en-US', dateOptions)
   let readableTime = currentDate.toLocaleTimeString('en-US', timeOptions)
 
+   // scroll to the last message in the chat area
+   const scrollToBottom = () => {
+      const chatArea= document.querySelector('.chat-area')
+      chatArea.scrollTop = (chatArea.scrollHeight += 100)
+      console.log(chatArea.scrollHeight)
+    }
+
   if (customerIsKnown === false) {
     socket.emit('id-customer', customerId)
   } else {
@@ -148,6 +155,7 @@
 
   sendMessageBtn.addEventListener('click', () => {
     let chatInputValue = chatInput.value
+    scrollToBottom()
 
     while (selectingItems === true) {
       chatMessage = chatInputValue
@@ -364,6 +372,7 @@
 
     chatAreaMain.insertAdjacentHTML('beforeend', chatMsg)
     chatInput.value = ''
+    scrollToBottom()
   }
   
   

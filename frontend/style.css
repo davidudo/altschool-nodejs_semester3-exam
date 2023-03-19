@@ -122,7 +122,7 @@ html {
   overflow: auto;
 }
 .chat-area {
-  flex-grow: 1;
+  flex-grow: 1
 }
 .search-bar {
   height: 80px;
@@ -403,6 +403,7 @@ html {
   position: sticky;
   bottom: 0;
   left: 0;
+  margin-top: 30px;
 }
 .chat-area-footer svg {
   color: var(--settings-icon-color);
