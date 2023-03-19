@@ -141,13 +141,8 @@
     localStorage.setItem('customerName', data.name)
     customerIsKnown = true
 
-    socket.on('connected', (data) => {
-      console.log(data)
-      chatMessage = data
-      ownerClass = ''
-
-      addMessage(chatMessage, ownerClass, imgSrc)
-    })
+    // Refresh page
+    location.reload()
   })
 
 

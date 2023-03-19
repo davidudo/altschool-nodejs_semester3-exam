@@ -140,6 +140,7 @@ io.on('connection', (socket: Socket): void => {
         console.log(customer.id)
 
         socket.emit('store-customer', customer)
+        socket.emit('connected', welcomeMessage)
       })
     }
   })
